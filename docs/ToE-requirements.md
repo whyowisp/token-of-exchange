@@ -1,19 +1,36 @@
 # 🌴 Token of Exchange – Simulation Design
 
+## Preface
+
+*Once there was a serene island, far away from the mainland. The residents no longer remembered how or why they came to be there — only that they were ten, and the outside world was unknown to them. They lived quietly, self-sufficiently. Water was carried from the fountain, and each person cultivated their own small plot of land. There was no excess, no luxury. Just enough to sustain themselves.*
+
+*Then one day, the Elder of the village — in a haze of senile inspiration — declared a new order:*
+
+> *“From this day on, everyone must make their living through an abstraction called a* **workshop**. *And no one may trade without another abstraction, called a* **Token**. *This decree,” he claimed, “comes from above. Beware the wrath that shall follow if it is not obeyed.”*
+
+*Thus began the age of the Token.*
+
+---
+
+**The question is:**  
+*How will the Token system be implemented? Will it provide for everyone’s needs — or fail them? What consequences will follow each decision?*
+
 ## 🧭 Setting
 
 An **isolated island** with:
 
-- 10 Habitants (including 1 Elder and 1 or more Entrepreneurs)
-- 1 Bank
+- 10 Residents (including 1 Elder and 1 or more Traders)
+- 1 Mint (Bank)
 - 100 Tokens
-- 1 Company producing food (the only essential good)
+- 1 or more workshops producing sustenance (the only essential good for the residents)
+
+User interacts the simulation by selecting from different token- and other economy settings.
 
 ---
 
-## 🎮 Simulation Scenarios
+## 🎮 Simulation Modes
 
-### 🔹 Basic Sim *(Must-have)*
+### 🔹 Foundational Mode *(Must-have)*
 
 A minimalist simulation to explore how different token issuance systems affect productivity and life quality.
 
@@ -22,24 +39,24 @@ Focus Areas:
 - Token creation methods (e.g., fiat, debt, fixed supply)
 - Loan issuance and repayment cycles
 - Employment dynamics and productivity
-- Distribution of tokens among habitants
-- Basic needs: food production and consumption
-- Simple economy with one or few companies and limited roles
+- Distribution of tokens among residents
+- Basic needs: sustenance production and consumption
+- Simple economy with one or few workshops and limited roles
 - Effects of inflation or deflation on livelihood
 
-### 🔸 Environmental Model
+### 🔸 Eco-Constraint mode
 
 Adds ecological constraints to production and population.
 
 **Key Variables:**
 
-- Island Carrying Capacity (max sustainable food production)
+- Island Carrying Capacity (max sustainable sustenance production)
 - Resource Depletion Rate
 - Regeneration Rate
 - Pollution Accumulation *(optional)*
 - Population Growth
 
-### 🔺 Geopolitical Model
+### 🔺 Multi-Island mode
 
 Two or more islands compete via governance, trade, technology, and possibly military.  
 Inspired by game theory dynamics.
@@ -49,7 +66,7 @@ Inspired by game theory dynamics.
 - Competing governance systems
 - Currency valuation & exchange
 - Technological races
-- Inter-island diplomacy/conflict
+- Inter-island diplomacy or conflict
 
 ---
 
@@ -57,22 +74,27 @@ Inspired by game theory dynamics.
 
 ### 💰 Banking Systems
 
-- **Gold Standard** – Fixed token supply, backed by gold
+- **Gold Standard** – Fixed token supply, backed by scarce metal
 - **Crypto-like** – Fixed supply, distributed issuance
-- **Fiat** – Bank issues tokens via loans
-- **Government-issued** – Sovereign non-debt money
+- **Fiat** – Mint issues tokens via loans
+- **Government-issued** – Sovereign non-debt token
 
 ### 🏛️ Governance Models
 
-- **Elder Rule** – Central control
-- **Entrepreneurial** – Free market leads
+- **Elder Autocratic** – Central control
+- **Trader-led** – Free market leads
 - **Council** – Collective decision-making
 
 ### 🏗️ Company Types
 
+In first phase only one type of goods:
+
 - **Sustenance Production** – Food, basic needs
+
+These types are introduced later:
+
 - **Housing** – Population satisfaction
-- **Status Items** – Incentivize entrepreneurship (non-essential goods)
+- **Luxury Goods** – Incentivize entrepreneurship (non-essential goods)
 
 ---
 
@@ -83,42 +105,46 @@ Inspired by game theory dynamics.
 - **GDP**
 - **GDP / Debt Ratio**
 - **Public vs. Private Debt**
-- **Token Value** *(Inflation/Deflation)*
+- **Exchange power** *(Inflation/Deflation)*
 - **Total Token Supply**
-- **Token Velocity**
+- **Token Circulation Velocity**
 
 ### 🌿 Environmental Metrics *(in Environmental Model)*
 
-- Resource availability
-- Regeneration vs. depletion trends
-- Sustainability indicators
+- **Resource availability**
+- **Regeneration vs. depletion trends**
+- **Sustainability indicators**
 
 ---
 
-## 💬 Simulation Feed – Chat Window
+## 💬 Simulation Feed
 
-Textual log of simulation events. Example:
+A live textual log of simulation events. Example:
 
-*Habitant 4 is hungry.
-Habitant 4 searches for a job.
-Habitant 4 begins self-employment.
-Habitant 4 hires Habitant 6.
-Habitant 4 eats.*
+*Resident 4 is hungry.
+Resident 4 searches for a job.
+Resident 4 begins self-employment.
+Resident 4 hires Resident 6.
+Resident 4 ceases
+Resident 6 takes a loan
+Resident 6 buys leaderless company*
+
+etc. etc.
 
 ### 🧩 Chat Window Modes
 
 - **Verbose** – Full activity feed
 - **Summarized** – Only major events
 - **Story Mode** – Adds personality:  
-  *“Habitant 4 dreams of building a bakery.”*
+  *“Resident 4 dreams of building a bakery.”*
 
 ---
 
 ## 🌱 Possible Future Additions
 
 - Random Events: Storms, tech breakthroughs, migration
-- Trade between islands *(in Geopolitical Model)*
-- Habitants with AI-driven personalities (e.g. lazy, ambitious, collectivist)
-- Education/Knowledge as an economic variable
+- Trade between islands *(in Multi-Island mode)*
+- Residents with AI-driven personalities (e.g. lazy, ambitious, collectivist)
+- Education/Knowledge as an economic variable (an important factor!)
 
 ---
