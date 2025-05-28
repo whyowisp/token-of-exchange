@@ -1,12 +1,13 @@
 import React from 'react';
-import { ButtonGroup, Button, Box, AppBar, Container, Typography, Toolbar, IconButton, Menu, MenuItem, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio } from "@mui/material";
+import { Switch, Button, Box, AppBar, Container, Typography, Toolbar, IconButton, Menu, MenuItem, FormControlLabel } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
+import MaterialUISwitch from '../styles/materialUISwitch';
 
 import type { ThemeProps } from '../types/theme'; ''
 
 const pages = ['Simulation', 'About', 'Contact'];
 
-const MainMenu: React.FC<ThemeProps> = ({ mode, handleModeChange }) => {
+const MainMenu: React.FC<ThemeProps> = ({ mode, setMode }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -15,6 +16,10 @@ const MainMenu: React.FC<ThemeProps> = ({ mode, handleModeChange }) => {
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+  };
+
+  const handleThemeToggle = () => {
+    setMode(mode === 'dark' ? 'light' : 'dark');
   };
 
   return (
@@ -110,18 +115,16 @@ const MainMenu: React.FC<ThemeProps> = ({ mode, handleModeChange }) => {
           </Box>
 
           {/* Theme toggle */}
-          <FormControl>
-            <RadioGroup
-              aria-labelledby="demo-theme-toggle"
-              name="theme-toggle"
-              row
-              value={mode}
-              onChange={handleModeChange}
-            >
-              <FormControlLabel value="light" control={<Radio />} label="Light" />
-              <FormControlLabel value="dark" control={<Radio />} label="Dark" />
-            </RadioGroup>
-          </FormControl>
+          <FormControlLabel
+            control={<MaterialUISwitch
+              value={mode === 'dark'}
+              onChange={handleThemeToggle}
+              name="themeToggle"
+              color="default"
+            />
+            }
+            label={mode === 'dark' ? 'Dark Mode' : 'Light Mode'}
+          />
         </Toolbar>
       </Container>
     </AppBar>
