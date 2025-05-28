@@ -2,10 +2,11 @@ import React from 'react';
 import { ButtonGroup, Button, Box, AppBar, Container, Typography, Toolbar, IconButton, Menu, MenuItem, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 
+import type { ThemeProps } from '../types/theme'; ''
+
 const pages = ['Simulation', 'About', 'Contact'];
 
-
-const MainMenu = () => {
+const MainMenu: React.FC<ThemeProps> = ({ mode, handleModeChange }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -107,6 +108,20 @@ const MainMenu = () => {
               </Button>
             ))}
           </Box>
+
+          {/* Theme toggle */}
+          <FormControl>
+            <RadioGroup
+              aria-labelledby="demo-theme-toggle"
+              name="theme-toggle"
+              row
+              value={mode}
+              onChange={handleModeChange}
+            >
+              <FormControlLabel value="light" control={<Radio />} label="Light" />
+              <FormControlLabel value="dark" control={<Radio />} label="Dark" />
+            </RadioGroup>
+          </FormControl>
         </Toolbar>
       </Container>
     </AppBar>

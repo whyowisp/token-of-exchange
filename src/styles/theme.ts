@@ -1,20 +1,21 @@
 import { createTheme } from '@mui/material'
 
 const theme = createTheme({
+  colorSchemes: {
+    light: true,
+  },
   palette: {
-    mode: 'light',
     primary: {
-      main: '#1976d2',
+      // main color red
+      light: '#ff7961',
+      main: '#f44336',
     },
   },
 });
 
 const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#90caf9',
-    },
+  colorSchemes: {
+    dark: true,
   },
 });
 

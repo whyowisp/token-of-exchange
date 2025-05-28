@@ -10,12 +10,23 @@ import { theme, darkTheme } from './styles/theme';
 import SimulationLayout from './components/SimulationLayout'
 import MainMenu from './components/MainMenu'
 
+import type { Mode } from './types/theme';
+
 const App = () => {
+  const { mode, setMode } = useColorScheme();
+
+  const handleModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newMode = event.target.value as Mode;
+    setMode(newMode);
+  };
+
+  if (!mode) return null;
+
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={mode === 'dark' ? darkTheme : theme}>
       <CssBaseline />
       <Box sx={{ minHeight: '100vh' }}>
-        <MainMenu />
+        <MainMenu mode={mode} setMode={setMode} handleModeChange={handleModeChange} />
         <SimulationLayout />
       </Box>
     </ThemeProvider>
