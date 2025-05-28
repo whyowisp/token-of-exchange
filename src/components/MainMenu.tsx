@@ -1,14 +1,19 @@
 import React from 'react';
-import { Switch, Button, Box, AppBar, Container, Typography, Toolbar, IconButton, Menu, MenuItem, FormControlLabel } from "@mui/material";
+import { Switch, Button, Box, AppBar, Container, Typography, Toolbar, IconButton, Menu, MenuItem, FormControlLabel, useMediaQuery, useTheme } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import MaterialUISwitch from '../styles/materialUISwitch';
+import MaterialUISwitch from '../styles/MaterialUISwitch';
 
-import type { ThemeProps } from '../types/theme'; ''
+import type { ThemeProps } from '../types/theme'; import { Link, Router, Route, Routes, Link as RouterLink, BrowserRouter } from 'react-router';
+import Contact from './Contact';
+import Home from './Home';
+''
 
-const pages = ['Simulation', 'About', 'Contact'];
+const pages = ['/', 'simulation', 'contact'];
 
 const MainMenu: React.FC<ThemeProps> = ({ mode, setMode }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -74,9 +79,11 @@ const MainMenu: React.FC<ThemeProps> = ({ mode, setMode }) => {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+                <Link to={page} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page == '/' ? 'home' : page}</Typography>
+                  </MenuItem>
+                </Link>
               ))}
             </Menu>
           </Box>
@@ -104,13 +111,15 @@ const MainMenu: React.FC<ThemeProps> = ({ mode, setMode }) => {
           {/* Desktop menu */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
+              <Link to={page}>
+                <Button
+                  key={page}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  {page == '/' ? 'Home' : page}
+                </Button>
+              </Link>
             ))}
           </Box>
 
@@ -124,7 +133,12 @@ const MainMenu: React.FC<ThemeProps> = ({ mode, setMode }) => {
             />
             }
             label={mode === 'dark' ? 'Dark theme' : 'Light theme'}
-            labelPlacement='start'
+            labelPlacement='start' sx={{
+              '.MuiFormControlLabel-label': {
+                fontSize: '0.8rem',
+                display: isSmallScreen ? 'none' : 'block'
+              }
+            }}
           />
         </Toolbar>
       </Container>
