@@ -123,7 +123,8 @@ const MainMenu: React.FC<ThemeProps> = ({ mode, setMode }) => {
               color="default"
             />
             }
-            label={mode === 'dark' ? 'Dark Mode' : 'Light Mode'}
+            label={mode === 'dark' ? 'Dark theme' : 'Light theme'}
+            labelPlacement='start'
           />
         </Toolbar>
       </Container>
