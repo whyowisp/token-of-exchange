@@ -4,9 +4,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MaterialUISwitch from '../styles/MaterialUISwitch';
 
 import type { ThemeProps } from '../types/theme'; import { Link, Router, Route, Routes, Link as RouterLink, BrowserRouter } from 'react-router';
-import Contact from './Contact';
-import Home from './Home';
-''
 
 const pages = ['/', 'simulation', 'contact'];
 

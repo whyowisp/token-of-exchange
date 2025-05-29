@@ -3,7 +3,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-import { Box, CssBaseline } from '@mui/material';
+import { Box, Container, CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { useColorScheme } from '@mui/material/styles';
 import { theme, darkTheme } from './styles/theme';
@@ -21,14 +21,14 @@ const App = () => {
   return (
     <ThemeProvider theme={mode === 'dark' ? darkTheme : theme}>
       <CssBaseline />
-      <Box sx={{ minHeight: '100vh' }}>
+      <Container maxWidth="xl">
         <MainMenu mode={mode} setMode={setMode} />
         <Routes>
           <Route path="/contact" element={<Contact />} />
           <Route path="/simulation" element={<SimulationLayout />} />
           <Route path="/" element={<Home />} />
         </Routes>
-      </Box>
+      </Container>
     </ThemeProvider>
   );
 }
