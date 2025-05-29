@@ -2,7 +2,7 @@ import { Container, Typography, Paper, Box, Link } from '@mui/material';
 
 const Contact = () => {
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
+    <Container maxWidth="lg">
       <Paper elevation={3} sx={{ p: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Contact
