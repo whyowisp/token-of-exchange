@@ -85,6 +85,20 @@ Inspired by game theory dynamics.
 - **Trader-led** – Free market leads
 - **Council** – Collective decision-making
 
+### 🧾 Taxation Models
+
+- **No Taxation** – Pure market-driven economy
+- **Flat Tax** – A fixed percentage on all income or transactions
+- **Progressive Tax** – Higher rates for wealthier residents
+- **Wealth Tax** – Recurring tax on accumulated tokens
+- **Consumption Tax** – Token cost on purchases (spending-based)
+- **Resource Tax** (Eco Mode) – Token cost for exploiting natural resources
+
+Optional configurations:
+
+- Who collects it (Elder, Council, automated system)
+- What it funds (redistribution, public projects, destruction/"burning")
+
 ### 🏗️ Company Types
 
 In first phase only one type of goods:
