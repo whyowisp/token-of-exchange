@@ -40,10 +40,10 @@ const App = () => {
         <Container maxWidth="xl" >
           <Paper
             sx={{
-              // minHeight: '100vh', // uncomment for the Paper (overlay) to fill the viewport height
+              minHeight: '100vh',
               borderRadius: 0,
               // override theme's default background color (fixes dark mode issue)
-              backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)',
+              //backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)',
               boxShadow: 'none',
             }}
           >
