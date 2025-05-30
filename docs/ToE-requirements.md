@@ -4,7 +4,7 @@
 
 *Once there was a serene island, far away from the mainland. The residents no longer remembered how or why they came to be there — only that they were ten, and the outside world was unknown to them. They lived quietly, self-sufficiently. Water was carried from the fountain, and each person cultivated their own small plot of land. There was no excess, no luxury. Just enough to sustain themselves.*
 
-*Then one day, the Elder of the village — in a haze of senile inspiration — declared a new order:*
+*Then, one day, the Elder of the village — in solemn conviction of a divine message — declared a new order:*
 
 > *“From this day on, everyone must make their living through an abstraction called a* **workshop**. *And no one may trade without another abstraction, called a* **Token**. *This decree,” he claimed, “comes from above. Beware the wrath that shall follow if it is not obeyed.”*
 
