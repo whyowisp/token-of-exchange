@@ -21,7 +21,7 @@ const Home = () => {
           minHeight: '60vh',
         }}
       >
-        {/* Overlay for background color based on theme */}
+        {/* Overlay for home background image based on theme */}
         <Container
           disableGutters
           sx={{

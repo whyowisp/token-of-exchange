@@ -25,23 +25,26 @@ const App = () => {
       <CssBaseline />
       <Box
         sx={{
-          width: '100vw',
-          minHeight: '100vh',
+          minHeight: '100vh', // Full height for the background image
           backgroundImage: `url(${island})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
+          overflow: 'hidden'
         }}
       >
 
         <MainMenu mode={mode} setMode={setMode} />
 
         {/* Main content area with dark overlay for the background image */}
-        <Container maxWidth="xl" sx={{ minHeight: '100vh', background: 'transparent' }}>
+        <Container maxWidth="xl" >
           <Paper
             sx={{
-              minHeight: '100vh',
+              // minHeight: '100vh', // uncomment for the Paper (overlay) to fill the viewport height
               borderRadius: 0,
+              // override theme's default background color (fixes dark mode issue)
+              backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)',
+              boxShadow: 'none',
             }}
           >
             <Routes>
