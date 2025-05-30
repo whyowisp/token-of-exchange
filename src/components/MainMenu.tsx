@@ -27,10 +27,10 @@ const MainMenu: React.FC<ThemeProps> = ({ mode, setMode }) => {
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
+        <Toolbar disableGutters variant='dense'>
           {/* Logo for desktop */}
           <Typography
-            variant="h6"
+            variant="h4"
             noWrap
             component="a"
             href="/"
@@ -87,7 +87,7 @@ const MainMenu: React.FC<ThemeProps> = ({ mode, setMode }) => {
 
           {/* Logo for mobile */}
           <Typography
-            variant="h5"
+            variant="h6"
             noWrap
             component="a"
             href="#"
@@ -112,7 +112,7 @@ const MainMenu: React.FC<ThemeProps> = ({ mode, setMode }) => {
                 <Button
                   key={page}
                   onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
+                  sx={{ color: 'white', display: 'block' }}
                 >
                   {page == '/' ? 'Home' : page}
                 </Button>
@@ -121,21 +121,11 @@ const MainMenu: React.FC<ThemeProps> = ({ mode, setMode }) => {
           </Box>
 
           {/* Theme toggle */}
-          <FormControlLabel
-            control={<MaterialUISwitch
-              value={mode === 'dark'}
-              onChange={handleThemeToggle}
-              name="themeToggle"
-              color="default"
-            />
-            }
-            label={mode === 'dark' ? 'Dark theme' : 'Light theme'}
-            labelPlacement='start' sx={{
-              '.MuiFormControlLabel-label': {
-                fontSize: '0.8rem',
-                display: isSmallScreen ? 'none' : 'block'
-              }
-            }}
+          <MaterialUISwitch
+            value={mode === 'dark'}
+            onChange={handleThemeToggle}
+            name="themeToggle"
+            color="default"
           />
         </Toolbar>
       </Container>
