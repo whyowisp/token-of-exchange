@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Button,
   Box,
@@ -19,7 +19,7 @@ import { Link } from 'react-router'
 const pages = ['/', 'simulation', 'guide', 'contact']
 
 const MainMenu: React.FC<ThemeProps> = ({ mode, setMode }) => {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
   const theme = useTheme()
   //const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 

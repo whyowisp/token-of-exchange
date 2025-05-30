@@ -81,9 +81,9 @@ Inspired by game theory dynamics.
 
 ### 🏛️ Governance Models
 
-- **Elder Autocratic** – Central control
-- **Trader-led** – Free market leads
-- **Council** – Collective decision-making
+- **Elder Autocratic** – Central control. User can choose what companies are founded (You are the dictator -model).
+- **Trader-led** – Free market leads, an automatic mechanism for individuals to start businesses based on their initiative capabilities. The individuals are looking **possibilities for profit**
+- **Council** – Collective decision-making. The residents pleas are collected and either user or the Elder can execute new businesses based on *plea-metrics*. E.g. if shortage of something is spotted, the that shortage is then covered by applicable means.
 
 ### 🧾 Taxation Models
 
