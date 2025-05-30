@@ -16,7 +16,7 @@ import MaterialUISwitch from '../styles/MaterialUISwitch'
 import type { ThemeProps } from '../types/types'
 import { Link } from 'react-router'
 
-const pages = ['/', 'simulation', 'contact']
+const pages = ['/', 'simulation', 'guide', 'contact']
 
 const MainMenu: React.FC<ThemeProps> = ({ mode, setMode }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
