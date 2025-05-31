@@ -12,7 +12,7 @@ import { Routes, Route } from 'react-router'
 import MainMenu from './components/MainMenu'
 import Home from './components/Home'
 import Contact from './components/Contact'
-import SimulationLayout from './components/Simulation/SimulationLayout'
+import Simulation from './components/Simulation/Simulation'
 
 import island from './assets/island.png'
 import Guide from './components/Guide'
@@ -49,7 +49,7 @@ const App = () => {
           >
             <Routes>
               <Route path="/contact" element={<Contact />} />
-              <Route path="/simulation" element={<SimulationLayout />} />
+              <Route path="/simulation" element={<Simulation />} />
               <Route path="/" element={<Home />} />
               <Route path="/guide" element={<Guide />} />
             </Routes>
