@@ -28,7 +28,7 @@ const renderRow = ({ index, style }: RowProps) => {
 
 const Feed = () => {
   return (
-    <Paper>
+    <Paper sx={{ p: 2 }} elevation={2}>
       <Typography variant="h6" gutterBottom>
         FEED
       </Typography>

@@ -5,7 +5,7 @@ import { Container, Paper, Stack, Typography } from '@mui/material'
 const Metrics = () => {
   return (
     <Stack spacing={1}>
-      <Paper sx={{ p: 2 }}>
+      <Paper sx={{ p: 2 }} elevation={2}>
         <Typography variant="h6" gutterBottom>
           GDP
         </Typography>
@@ -19,7 +19,7 @@ const Metrics = () => {
           height={300}
         />
       </Paper>
-      <Paper>
+      <Paper sx={{ p: 2 }} elevation={2}>
         <Typography variant="h6" gutterBottom>
           TOKEN CIRCULATION VELOCITY
         </Typography>
