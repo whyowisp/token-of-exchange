@@ -3,7 +3,6 @@ import type {
   SimulationStore,
   BankingMode,
   GovernanceMode,
-  TaxationMode,
 } from '../../types/types'
 import { Checkbox } from '@mui/material'
 import { useSimulationStore } from './simulationStore'
@@ -22,23 +21,21 @@ import {
 const Settings = () => {
   const bankingMode = useSimulationStore((state) => state.bankingMode)
   const setBankingMode = useSimulationStore((state) => state.setBankingMode)
-  console.log('Banking mode:', bankingMode)
 
   const governanceMode = useSimulationStore((state) => state.governanceMode)
   const setGovernanceMode = useSimulationStore(
     (state) => state.setGovernanceMode
   )
-  console.log('Governance model:', governanceMode)
 
-  const [checked, setChecked] = useState<boolean>(false)
+  const enabledTaxes = useSimulationStore((state) => state.enabledTaxes)
+  const setTaxEnabled = useSimulationStore((state) => state.setTaxEnabled)
+  //const setTaxRate = useSimulationStore((state) => state.setTaxRate)
+  //const taxRates = useSimulationStore((state) => state.taxRates)
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked)
-    console.log('Checkbox changed:', event.target.value)
-  }
+  console.log('Enabled Taxes:', enabledTaxes)
 
   return (
-    <Paper sx={{ mb: 2 }}>
+    <Paper sx={{ mb: 2 }} elevation={2}>
       <Container sx={{ p: 2 }}>
         <Typography variant="h6" gutterBottom>
           SIMULATION SETTINGS
@@ -84,7 +81,7 @@ const Settings = () => {
             }
           >
             <FormControlLabel
-              value="elder autocratic"
+              value="elder-autocratic"
               control={<Radio />}
               label="Elder Autocratic"
             />
@@ -104,28 +101,58 @@ const Settings = () => {
         <FormControl>
           <FormLabel id="taxation-checkbox">Taxation</FormLabel>
           <FormControlLabel
-            control={<Checkbox checked={checked} onChange={handleChange} />}
-            value="flat-tax"
+            control={
+              <Checkbox
+                checked={enabledTaxes.get('flat') || false}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setTaxEnabled('flat', e.target.checked)
+                }
+              />
+            }
             label="Flat Tax"
           />
           <FormControlLabel
-            control={<Checkbox checked={checked} onChange={handleChange} />}
-            value="progressive-tax"
+            control={
+              <Checkbox
+                checked={enabledTaxes.get('progressive') || false}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setTaxEnabled('progressive', e.target.checked)
+                }
+              />
+            }
             label="Progressive Tax"
           />
           <FormControlLabel
-            control={<Checkbox checked={checked} onChange={handleChange} />}
-            value="wealth-tax"
+            control={
+              <Checkbox
+                checked={enabledTaxes.get('wealth') || false}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setTaxEnabled('wealth', e.target.checked)
+                }
+              />
+            }
             label="Wealth Tax"
           />
           <FormControlLabel
-            control={<Checkbox checked={checked} onChange={handleChange} />}
-            value="consuption-tax"
+            control={
+              <Checkbox
+                checked={enabledTaxes.get('consumption') || false}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setTaxEnabled('consumption', e.target.checked)
+                }
+              />
+            }
             label="Consumption Tax"
           />
           <FormControlLabel
-            control={<Checkbox checked={checked} onChange={handleChange} />}
-            value="resource-tax"
+            control={
+              <Checkbox
+                checked={enabledTaxes.get('resource') || false}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setTaxEnabled('resource', e.target.checked)
+                }
+              />
+            }
             label="Resource Tax"
           />
         </FormControl>

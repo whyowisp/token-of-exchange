@@ -2,9 +2,12 @@ import type {
   SimulationStore,
   BankingMode,
   GovernanceMode,
-  TaxationMode,
+  TaxType
 } from '../../types/types'
 import { create } from 'zustand'
+
+
+
 
 export const useSimulationStore = create<SimulationStore>((set) => ({
   bankingMode: 'gold-standard',
@@ -14,10 +17,16 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
   setGovernanceMode: (governanceMode: GovernanceMode) =>
     set({ governanceMode }),
 
-  taxationMode: 'flat-tax',
-  setTaxationMode: (taxationMode: TaxationMode) => set({ taxationMode }),
-
-  setTaxationModel: (taxationMode: TaxationMode) => set({ taxationMode }),
+  enabledTaxes: new Map<TaxType, boolean>(),
+  setTaxEnabled: (taxType: TaxType, enabled: boolean) =>
+    set((state) => ({
+      enabledTaxes: new Map(state.enabledTaxes).set(taxType, enabled)
+    })),
+  taxRates: new Map<TaxType, number>(),
+  setTaxRate: (taxType: TaxType, rate: number) =>
+    set((state) => ({
+      taxRates: new Map(state.taxRates).set(taxType, rate)
+    })),
 
   isRunning: false,
   startSimulation: () => set({ isRunning: true }),

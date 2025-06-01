@@ -21,7 +21,7 @@ export interface PageProps {
 
 export type BankingMode = 'fiat' | 'gold-standard' | 'crypto-like' | 'government-issued'
 export type GovernanceMode = 'elder-autocratic' | 'trader-led' | 'council'
-export type TaxationMode = 'flat-tax' | 'progressive-tax' | 'wealth-tax' | 'consuption-tax' | 'resource-tax'
+export type TaxType = 'flat' | 'progressive' | 'wealth' | 'consumption' | 'resource'
 
 export type SimulationStore = {
   bankingMode: BankingMode
@@ -30,8 +30,10 @@ export type SimulationStore = {
   governanceMode: GovernanceMode
   setGovernanceMode: (governanceMode: GovernanceMode) => void
 
-  taxationMode: TaxationMode
-  setTaxationModel: (taxationModel: TaxationMode) => void
+  enabledTaxes: Map<TaxType, boolean>
+  setTaxEnabled: (taxType: TaxType, enabled: boolean) => void
+  taxRates: Map<TaxType, number>
+  setTaxRate: (taxType: TaxType, rate: number) => void
 
   isRunning: boolean
   startSimulation: () => void
