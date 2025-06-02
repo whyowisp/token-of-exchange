@@ -27,12 +27,10 @@ const Settings = () => {
     (state) => state.setGovernanceMode
   )
 
-  const enabledTaxes = useSimulationStore((state) => state.enabledTaxes)
-  const setTaxEnabled = useSimulationStore((state) => state.setTaxEnabled)
-  //const setTaxRate = useSimulationStore((state) => state.setTaxRate)
-  //const taxRates = useSimulationStore((state) => state.taxRates)
+  const taxSettings = useSimulationStore((state) => state.taxSettings)
+  const setTaxConfig = useSimulationStore((state) => state.setTaxConfig)
 
-  console.log('Enabled Taxes:', enabledTaxes)
+  console.log('Enabled Taxes:', taxSettings)
 
   return (
     <Paper sx={{ mb: 2 }} elevation={2}>
@@ -103,10 +101,12 @@ const Settings = () => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={enabledTaxes.get('flat') || false}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setTaxEnabled('flat', e.target.checked)
-                }
+                checked={taxSettings.get('flat')?.enabled ?? false}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setTaxConfig('flat', {
+                    enabled: e.target.checked,
+                  })
+                }}
               />
             }
             label="Flat Tax"
@@ -114,10 +114,12 @@ const Settings = () => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={enabledTaxes.get('progressive') || false}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setTaxEnabled('progressive', e.target.checked)
-                }
+                checked={taxSettings.get('progressive')?.enabled ?? false}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setTaxConfig('progressive', {
+                    enabled: e.target.checked,
+                  })
+                }}
               />
             }
             label="Progressive Tax"
@@ -125,10 +127,12 @@ const Settings = () => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={enabledTaxes.get('wealth') || false}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setTaxEnabled('wealth', e.target.checked)
-                }
+                checked={taxSettings.get('wealth')?.enabled ?? false}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setTaxConfig('wealth', {
+                    enabled: e.target.checked,
+                  })
+                }}
               />
             }
             label="Wealth Tax"
@@ -136,10 +140,12 @@ const Settings = () => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={enabledTaxes.get('consumption') || false}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setTaxEnabled('consumption', e.target.checked)
-                }
+                checked={taxSettings.get('consumption')?.enabled ?? false}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setTaxConfig('consumption', {
+                    enabled: e.target.checked,
+                  })
+                }}
               />
             }
             label="Consumption Tax"
@@ -147,10 +153,12 @@ const Settings = () => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={enabledTaxes.get('resource') || false}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setTaxEnabled('resource', e.target.checked)
-                }
+                checked={taxSettings.get('resource')?.enabled ?? false}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setTaxConfig('resource', {
+                    enabled: e.target.checked,
+                  })
+                }}
               />
             }
             label="Resource Tax"
