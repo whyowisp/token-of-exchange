@@ -15,6 +15,10 @@
 **The question is:**  
 *How will the Token system be implemented? Will it provide for everyone’s needs — or fail them? What consequences will follow each decision?*
 
+Token of Exchange is a simulation built around a simple thought experiment: What if an isolated island community, once based solely on barter, was suddenly forced to adopt money? The simulation explores how different systems of money creation, governance, and taxation shape the economy over time. Through interactive control, users can observe the unfolding changes — from individual trades between residents to broader economic indicators like GDP, resource sufficiency, economic growth, and overall well-being.
+
+
+
 ## 🧭 Setting
 
 An **isolated island** with:
