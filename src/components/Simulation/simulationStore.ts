@@ -18,17 +18,6 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
   setGovernanceMode: (governanceMode: GovernanceMode) =>
     set({ governanceMode }),
 
-  /*enabledTaxes: new Map<TaxType, boolean>(),
-  setTaxEnabled: (taxType: TaxType, enabled: boolean) =>
-    set((state) => ({
-      enabledTaxes: new Map(state.enabledTaxes).set(taxType, enabled)
-    })),
-  taxRates: new Map<TaxType, number>(),
-  setTaxRate: (taxType: TaxType, rate: number) =>
-    set((state) => ({
-      taxRates: new Map(state.taxRates).set(taxType, rate)
-    })),*/
-
   taxSettings: new Map<TaxType, TaxConfig>(),
   // Note to self: Partial makes providing properties optional. e.g No need to pass full { enabled: <value>, rate: <value> }
   setTaxConfig: (taxType: TaxType, config: Partial<TaxConfig>) => {
