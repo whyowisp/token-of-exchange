@@ -1,7 +1,7 @@
 import { Grid, Stack } from '@mui/material'
 import Settings from './Settings'
 import Metrics from './Metrics'
-import Residents from './Residents'
+import Community from './Community'
 import Feed from './Feed'
 
 const LayoutGrid = () => {
@@ -18,7 +18,7 @@ const LayoutGrid = () => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <Stack spacing={2}>
-          <Residents />
+          <Community />
           <Metrics />
         </Stack>
       </Grid>

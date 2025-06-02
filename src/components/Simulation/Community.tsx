@@ -1,5 +1,5 @@
-import React from 'react'
 import {
+  Chip,
   Container,
   Paper,
   Table,
@@ -14,54 +14,40 @@ import EmojiEmotionsSharpIcon from '@mui/icons-material/EmojiEmotionsSharp'
 import SentimentVeryDissatisfiedSharpIcon from '@mui/icons-material/SentimentVeryDissatisfiedSharp'
 import SentimentNeutralSharpIcon from '@mui/icons-material/SentimentNeutralSharp'
 
-const headers = [
-  'Icon',
-  'Resident',
-  'Occupation',
-  'Needs',
-  'Tokens',
-  'Assets',
-  'Actions',
-]
+const headers = ['Resident', 'Occupation', 'Tokens', 'Actions']
 
 const residentData = [
   {
     icon: EmojiEmotionsSharpIcon,
-    name: 'John Doe',
-    occupation: 'Farmer',
-    needs: 'Food, Water',
+    name: 'John',
+    status: 'thriving',
+    occupation: 'owner',
     tokens: 100,
-    assets: 'Land, Tools',
-    action: 'Resident 4 ➜ Resident 7',
-  },
-  {
-    icon: SentimentVeryDissatisfiedSharpIcon,
-    name: 'Jane Smith',
-    occupation: 'Engineer',
-    needs: 'Shelter, Tools',
-    tokens: 150,
-    assets: 'House, Equipment',
-    action: 'Resident 5 ➜ Resident 8',
   },
   {
     icon: SentimentNeutralSharpIcon,
-    name: 'Alice Johnson',
-    occupation: 'Teacher',
-    needs: 'Books, Supplies',
-    tokens: 200,
-    assets: 'School, Materials',
-    action: 'Resident 6 ➜ Resident 9',
+    name: 'Alice',
+    status: 'deprived',
+    occupation: 'employee',
+    tokens: 50,
+  },
+  {
+    icon: SentimentVeryDissatisfiedSharpIcon,
+    name: 'Bob',
+    status: 'deceased',
+    occupation: 'unemployed',
+    tokens: 75,
   },
 ]
 
-const Residents = () => {
+const Community = () => {
   return (
     <Paper sx={{ mb: 2 }} elevation={2}>
       <Container sx={{ p: 2 }}>
         <Typography variant="h6" gutterBottom>
           COMMUNITY
         </Typography>
-        <Table ari-label="residents table" size="small">
+        <Table aria-label="community-table" size="small">
           <TableHead>
             <TableRow>
               {headers.map((header) => (
@@ -74,16 +60,17 @@ const Residents = () => {
           {/* Table body would go here, e.g. mapping over residents data */}
           <TableBody>
             {residentData.map((resident, index) => (
-              <TableRow key={index}>
+              <TableRow key={resident.name}>
                 <TableCell align="center">
-                  <resident.icon />
+                  <Chip
+                    sx={{ minWidth: 80 }}
+                    icon={<resident.icon />}
+                    label={resident.name}
+                  />
                 </TableCell>
-                <TableCell align="center">{resident.name}</TableCell>
                 <TableCell align="center">{resident.occupation}</TableCell>
-                <TableCell align="center">{resident.needs}</TableCell>
                 <TableCell align="center">{resident.tokens}</TableCell>
-                <TableCell align="center">{resident.assets}</TableCell>
-                <TableCell align="center">{resident.action}</TableCell>
+                <TableCell align="center"></TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -93,4 +80,4 @@ const Residents = () => {
   )
 }
 
-export default Residents
+export default Community
