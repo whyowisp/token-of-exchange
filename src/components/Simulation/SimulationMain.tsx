@@ -1,36 +1,34 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  Grid,
-  Slider,
-  Stack,
-  Typography,
-} from '@mui/material'
-import { debounce } from 'lodash'
+import { Resident } from '../../models/Resident'
+
+import { useEffect, useRef } from 'react'
+import { Box, Button, Grid, Slider, Stack, Typography } from '@mui/material'
+import { Toolbar } from '@mui/x-charts'
+import { useSimulationStore } from './simulationStore'
+
 import Settings from './Settings'
 import Metrics from './Metrics'
 import Community from './Community'
 import Feed from './Feed'
-import { useSimulationStore } from './simulationStore'
-import { useEffect, useMemo, useRef } from 'react'
-import { Toolbar } from '@mui/x-charts'
-import { DEFAULT_ZOOM_SLIDER_SHOW_TOOLTIP } from '@mui/x-charts/internals'
+import { initial } from 'lodash'
+import ToolBar from './ToolBar'
 
 const SimulationMain = () => {
-  const isRunning = useSimulationStore((state) => state.isRunning)
-  const start = useSimulationStore((state) => state.startSimulation)
-  const stop = useSimulationStore((state) => state.stopSimulation)
-
   const tickRate = useSimulationStore((state) => state.tickRate)
-  const setTickRate = useSimulationStore((state) => state.setTickRate)
+  const isRunning = useSimulationStore((state) => state.isRunning)
+  const update = useSimulationStore((state) => state.update)
+  const reset = useSimulationStore((state) => state.reset)
 
-  const tickCount = useSimulationStore((state) => state.tickCount)
-  const tickSimulation = useSimulationStore((state) => state.tickSimulation)
+  const residents = useSimulationStore((state) => state.residents)
 
+  // Ticks for debugging
+  const addTick = useSimulationStore((state) => state.addTick)
+
+  useEffect(() => {
+    if (residents.length === 0) reset()
+  }, [])
+
+  /* Simulation Loop */
   const rafRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
   useEffect(() => {
     if (!isRunning) return
 
@@ -39,7 +37,8 @@ const SimulationMain = () => {
     const tick = (now: number) => {
       console.log(tickRate)
       if (now - lastTime >= tickRate) {
-        tickSimulation()
+        addTick()
+        update()
         lastTime = now
       }
       rafRef.current = requestAnimationFrame(tick)
@@ -50,49 +49,11 @@ const SimulationMain = () => {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
-  }, [isRunning, tickSimulation])
+  }, [isRunning, addTick])
 
   return (
     <>
-      <Toolbar>
-        <Box sx={{ flexGrow: 3, display: { xs: 'flex' } }}>
-          <Button
-            sx={{
-              fontFamily: 'monospace',
-              fontWeight: 700,
-            }}
-            onClick={() => start()}
-          >
-            Start
-          </Button>
-          <Button
-            sx={{
-              fontFamily: 'monospace',
-              fontWeight: 700,
-            }}
-            onClick={() => stop()}
-          >
-            Stop
-          </Button>
-          <Slider
-            sx={{ width: 300, m: 1 }}
-            value={tickRate}
-            step={500}
-            marks
-            min={0}
-            max={5000}
-            valueLabelDisplay="auto"
-            onChange={(_, newValue) => {
-              stop()
-              setTickRate(typeof newValue === 'number' ? newValue : newValue[0])
-            }}
-          />{' '}
-          <Typography sx={{ m: 1, fontFamily: 'monospace' }}>
-            Tickcounter: {tickCount}
-          </Typography>
-        </Box>
-      </Toolbar>
-
+      <ToolBar />
       <Grid
         container
         spacing={1}
@@ -105,7 +66,7 @@ const SimulationMain = () => {
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <Stack spacing={2}>
-            <Community />
+            <Community residents={residents} />
             <Metrics />
           </Stack>
         </Grid>

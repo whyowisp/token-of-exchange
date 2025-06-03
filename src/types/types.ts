@@ -1,3 +1,5 @@
+import type { Resident } from "../models/Resident"
+
 /* MUI Theme Customization */
 declare module '@mui/material/styles' {
   interface Palette {
@@ -73,54 +75,36 @@ export type SimulationStore = {
   taxSettings: Map<TaxType, TaxConfig>
   setTaxConfig: (taxType: TaxType, config: Partial<TaxConfig>) => void
 
+  residents: Resident[] // With a risk of duplicates. The map function is used from Array very often.
+  setResidents: (residents: Resident[]) => void
+
   tickCount: number
-  tickSimulation: () => void
+  addTick: () => void
+
+  update: () => void
+  reset: () => void
 
   isRunning: boolean
-  startSimulation: () => void
-  stopSimulation: () => void
+  start: () => void
+  stop: () => void
+
 
   tickRate: number
   setTickRate: (value: number) => void
 }
 
-/* Resident class and related types */
-type ResidentStatus = 'thriving' | 'deprived' | 'deceased'
-type ResidentOccupation = 'owner' | 'employee' | 'unemployed'
-type Trait = 'inventor' | 'risk-taker' | 'sustainer'
+/* Resident related types */
+export type ResidentStatus = 'thriving' | 'deprived' | 'deceased'
+export type ResidentOccupation = 'owner' | 'employee' | 'unemployed'
+export type Trait = 'inventor' | 'risk-taker' | 'sustainer'
 
-class Resident {
-  private static nextId = 1
 
-  readonly _id: number
-  readonly _name: string
-  readonly _trait: Trait
-  _status: ResidentStatus
-  _occupation: ResidentOccupation
-  _tokens: number
-
-  constructor(name: string, trait: Trait) {
-    this._id = Resident.nextId++
-    this._name = name
-    this._trait = trait
-    this._status = 'thriving'
-    this._occupation = 'unemployed'
-    this._tokens = 0
-  }
-
-  setStatus(status: ResidentStatus) {
-    this._status = status
-  }
-
-  setOccupation(occupation: ResidentOccupation) {
-    this._occupation = occupation
-  }
-
-  addTokens(amount: number) {
-    this._tokens += amount
-  }
-
-  removeTokens(amount: number) {
-    this._tokens = Math.max(0, this._tokens - amount)
-  }
+// for future serialization use 
+export interface ResidentData {
+  id: number
+  name: string
+  trait: Trait
+  status: ResidentStatus
+  occupation: ResidentOccupation
+  tokens: number
 }

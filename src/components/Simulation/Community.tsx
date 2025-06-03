@@ -13,34 +13,40 @@ import {
 import EmojiEmotionsSharpIcon from '@mui/icons-material/EmojiEmotionsSharp'
 import SentimentVeryDissatisfiedSharpIcon from '@mui/icons-material/SentimentVeryDissatisfiedSharp'
 import SentimentNeutralSharpIcon from '@mui/icons-material/SentimentNeutralSharp'
+import type { Resident } from '../../models/Resident'
+import type { ResidentStatus } from '../../types/types'
 
 const headers = ['Resident', 'Occupation', 'Tokens', 'Actions']
 
-const residentData = [
-  {
-    icon: EmojiEmotionsSharpIcon,
-    name: 'John',
-    status: 'thriving',
-    occupation: 'owner',
-    tokens: 100,
-  },
-  {
-    icon: SentimentNeutralSharpIcon,
-    name: 'Alice',
-    status: 'deprived',
-    occupation: 'employee',
-    tokens: 50,
-  },
-  {
-    icon: SentimentVeryDissatisfiedSharpIcon,
-    name: 'Bob',
-    status: 'deceased',
-    occupation: 'unemployed',
-    tokens: 75,
-  },
-]
+interface CommunityProps {
+  residents: Array<Resident>
+}
 
-const Community = () => {
+const mapStatusIcon = (
+  status: ResidentStatus
+): React.ElementType | undefined => {
+  if (status === 'thriving') return EmojiEmotionsSharpIcon
+  if (status === 'deprived') return SentimentNeutralSharpIcon
+  if (status === 'deceased') return SentimentVeryDissatisfiedSharpIcon
+}
+
+const RenderResidentChip = ({ resident }: { resident: Resident }) => {
+  const Icon = mapStatusIcon(resident.status)
+  return (
+    <Chip
+      sx={{ minWidth: 80 }}
+      icon={
+        Icon && (
+          <Icon color={resident.status === 'thriving' ? 'thriving' : ''} />
+        )
+      }
+      label={resident.name}
+      disabled={resident.status === 'deceased'}
+    />
+  )
+}
+
+const Community: React.FC<CommunityProps> = ({ residents }) => {
   return (
     <Paper sx={{ mb: 2 }} elevation={2}>
       <Container sx={{ p: 2 }}>
@@ -59,14 +65,10 @@ const Community = () => {
           </TableHead>
           {/* Table body would go here, e.g. mapping over residents data */}
           <TableBody>
-            {residentData.map((resident, index) => (
+            {residents.map((resident) => (
               <TableRow key={resident.name}>
                 <TableCell align="center">
-                  <Chip
-                    sx={{ minWidth: 80 }}
-                    icon={<resident.icon />}
-                    label={resident.name}
-                  />
+                  <RenderResidentChip resident={resident} />
                 </TableCell>
                 <TableCell align="center">{resident.occupation}</TableCell>
                 <TableCell align="center">{resident.tokens}</TableCell>

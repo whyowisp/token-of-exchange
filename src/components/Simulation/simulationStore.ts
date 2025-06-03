@@ -1,3 +1,4 @@
+import { Resident } from '../../models/Resident'
 import type {
   SimulationStore,
   BankingMode,
@@ -6,6 +7,33 @@ import type {
   TaxConfig
 } from '../../types/types'
 import { create } from 'zustand'
+
+const names = [
+  'Alice',
+  'Bob',
+  'Carol',
+  'Dave',
+  'Eve',
+  'Frank',
+  'Grace',
+  'Hank',
+  'Irene',
+  'Jack',
+  'Kate',
+  'Leo',
+  'Mallory',
+  'Ned',
+  'Olivia',
+  'Peggy',
+  'Quinn',
+  'Rick',
+  'Sybil',
+  'Trent',
+]
+
+const createResidents = (): Array<Resident> => {
+  return names.slice(0, 10).map((name) => new Resident(name, 'sustainer', 5))
+}
 
 export const useSimulationStore = create<SimulationStore>((set) => ({
   bankingMode: 'gold-standard',
@@ -26,12 +54,52 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
     })
   },
 
+  residents: [],
+  setResidents: (residents: Resident[]) => set({ residents }),
+
   tickCount: 0,
-  tickSimulation: () => set((state) => ({ tickCount: state.tickCount + 1 })),
+  addTick: () => {
+    set((state) => ({ tickCount: state.tickCount + 1 }))
+  },
+
+  update: () =>
+    set((state) => {
+      // Create a new array with spread operator to maintain immutability
+      const updatedResidents = [...state.residents].map(resident => {
+        // Create a new resident instance with updated properties
+        const updatedResident = new Resident(
+          resident.name,
+          resident.trait,
+          resident.tokens
+        )
+
+        // Copy over current state
+        updatedResident.setStatus(resident.status)
+        //updatedResident.setOccupation(resident.occupation)
+        updatedResident.addTokens(-1)
+
+        // Add your simulation logic here
+        // Example:
+        if (updatedResident.tokens < 4) {
+          updatedResident.setStatus('deprived')
+        }
+        if (updatedResident.tokens < 2) {
+          updatedResident.setStatus('deceased')
+        }
+
+        return updatedResident
+      })
+      return { residents: updatedResidents }
+    }),
+  reset: () => {
+    set({ isRunning: false })
+    set({ tickCount: 0 })
+    set({ residents: createResidents() })
+  },
 
   isRunning: false,
-  startSimulation: () => set({ isRunning: true }),
-  stopSimulation: () => set({ isRunning: false }),
+  start: () => set({ isRunning: true }),
+  stop: () => set({ isRunning: false }),
 
   tickRate: 1000,
   setTickRate: (value: number) => set({ tickRate: value }),
