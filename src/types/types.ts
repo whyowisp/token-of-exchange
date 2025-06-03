@@ -36,11 +36,11 @@ declare module '@mui/material/SvgIcon' {
 }
 
 /* Theme Types */
-export type Mode = 'light' | 'dark' | 'system';
+export type Mode = 'light' | 'dark' | 'system'
 
 export interface ThemeProps {
-  mode: Mode;
-  setMode: (mode: Mode) => void;
+  mode: Mode
+  setMode: (mode: Mode) => void
 }
 
 /* React Component Props */
@@ -49,8 +49,8 @@ export interface HeaderProps {
 }
 
 export interface PageProps {
-  title: string;
-  content: React.ReactNode;
+  title: string
+  content: React.ReactNode
 }
 
 /* Simulation Settings Types */
@@ -73,37 +73,54 @@ export type SimulationStore = {
   taxSettings: Map<TaxType, TaxConfig>
   setTaxConfig: (taxType: TaxType, config: Partial<TaxConfig>) => void
 
+  tickCount: number
+  tickSimulation: () => void
+
   isRunning: boolean
   startSimulation: () => void
   stopSimulation: () => void
+
+  tickRate: number
+  setTickRate: (value: number) => void
 }
 
 /* Resident class and related types */
-type ResidentStatus = 'thriving' | 'deprived' | 'deceased';
-type ResidentOccupation = 'owner' | 'employee' | 'unemployed';
+type ResidentStatus = 'thriving' | 'deprived' | 'deceased'
+type ResidentOccupation = 'owner' | 'employee' | 'unemployed'
+type Trait = 'inventor' | 'risk-taker' | 'sustainer'
 
 class Resident {
   private static nextId = 1
 
-  readonly id: number
-  readonly name: string
-  status: ResidentStatus
-  occupation: ResidentOccupation
-  tokens: number
+  readonly _id: number
+  readonly _name: string
+  readonly _trait: Trait
+  _status: ResidentStatus
+  _occupation: ResidentOccupation
+  _tokens: number
 
-  constructor(name: string) {
-    this.id = Resident.nextId++
-    this.name = name
-    this.status = 'thriving'
-    this.occupation = 'unemployed'
-    this.tokens = 0
+  constructor(name: string, trait: Trait) {
+    this._id = Resident.nextId++
+    this._name = name
+    this._trait = trait
+    this._status = 'thriving'
+    this._occupation = 'unemployed'
+    this._tokens = 0
   }
 
   setStatus(status: ResidentStatus) {
-    this.status = status;
+    this._status = status
   }
 
   setOccupation(occupation: ResidentOccupation) {
-    this.occupation = occupation
+    this._occupation = occupation
+  }
+
+  addTokens(amount: number) {
+    this._tokens += amount
+  }
+
+  removeTokens(amount: number) {
+    this._tokens = Math.max(0, this._tokens - amount)
   }
 }

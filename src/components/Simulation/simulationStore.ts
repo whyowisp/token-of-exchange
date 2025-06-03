@@ -7,9 +7,6 @@ import type {
 } from '../../types/types'
 import { create } from 'zustand'
 
-
-
-
 export const useSimulationStore = create<SimulationStore>((set) => ({
   bankingMode: 'gold-standard',
   setBankingMode: (bankingMode: BankingMode) => set({ bankingMode }),
@@ -29,7 +26,13 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
     })
   },
 
+  tickCount: 0,
+  tickSimulation: () => set((state) => ({ tickCount: state.tickCount + 1 })),
+
   isRunning: false,
   startSimulation: () => set({ isRunning: true }),
   stopSimulation: () => set({ isRunning: false }),
+
+  tickRate: 1000,
+  setTickRate: (value: number) => set({ tickRate: value }),
 }))
