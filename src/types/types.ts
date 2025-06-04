@@ -97,9 +97,8 @@ export type SimulationStore = {
 export type ResidentStatus = 'thriving' | 'deprived' | 'deceased'
 export type ResidentOccupation = 'owner' | 'employee' | 'unemployed'
 export type Trait = 'inventor' | 'risk-taker' | 'sustainer'
+export type Activity = 'producing' | 'mining' | 'idle'
 
-
-// for future serialization use 
 export interface ResidentData {
   id: number
   name: string
@@ -107,4 +106,8 @@ export interface ResidentData {
   status: ResidentStatus
   occupation: ResidentOccupation
   tokens: number
+  sustenance: number
+  consumable: number
+  landQuality: number
+  activity: Activity
 }
