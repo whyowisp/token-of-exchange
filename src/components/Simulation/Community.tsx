@@ -16,7 +16,7 @@ import SentimentNeutralSharpIcon from '@mui/icons-material/SentimentNeutralSharp
 import type { Resident } from '../../models/Resident'
 import type { ResidentStatus } from '../../types/types'
 
-const headers = ['Resident', 'Occupation', 'Tokens', 'Actions']
+const headers = ['Resident', '🍕', '🥮', 'Occupation', '🌾', 'Actions']
 
 interface CommunityProps {
   residents: Array<Resident>
@@ -31,16 +31,21 @@ const mapStatusIcon = (
 }
 
 const RenderResidentChip = ({ resident }: { resident: Resident }) => {
+  const trait = resident._behaviouralTrait
+  let traitMark = ''
+  if (trait === 'inventor') traitMark = '⭐️'
+  if (trait === 'risk-taker') traitMark = '🛠️'
+
   const Icon = mapStatusIcon(resident.status)
   return (
     <Chip
-      sx={{ minWidth: 80 }}
+      sx={{ ml: 0 }}
       icon={
         Icon && (
           <Icon color={resident.status === 'thriving' ? 'thriving' : ''} />
         )
       }
-      label={resident.name}
+      label={resident.name + ' ' + traitMark}
       disabled={resident.status === 'deceased'}
     />
   )
@@ -63,16 +68,20 @@ const Community: React.FC<CommunityProps> = ({ residents }) => {
               ))}
             </TableRow>
           </TableHead>
-          {/* Table body would go here, e.g. mapping over residents data */}
+
           <TableBody>
             {residents.map((resident) => (
               <TableRow key={resident.name}>
-                <TableCell align="center">
+                <TableCell align="left">
                   <RenderResidentChip resident={resident} />
                 </TableCell>
-                <TableCell align="center">{resident.occupation}</TableCell>
+                <TableCell align="center">{resident.consumable}</TableCell>
                 <TableCell align="center">{resident.tokens}</TableCell>
-                <TableCell align="center"></TableCell>
+
+                <TableCell align="center">{resident.occupation}</TableCell>
+
+                <TableCell align="center">{resident.sustenance}</TableCell>
+                <TableCell align="center">{resident.activity}</TableCell>
               </TableRow>
             ))}
           </TableBody>

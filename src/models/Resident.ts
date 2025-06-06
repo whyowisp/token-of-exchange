@@ -1,6 +1,6 @@
 import type {
   ResidentStatus,
-  Trait,
+  BehaviouralTrait,
   ResidentOccupation,
   Activity,
 } from '../types/types'
@@ -10,7 +10,7 @@ export class Resident {
 
   readonly _id: number
   readonly _name: string
-  readonly _trait: Trait
+  readonly _behaviouralTrait: BehaviouralTrait
   private _status: ResidentStatus
   private _occupation: ResidentOccupation
   private _tokens: number
@@ -19,22 +19,22 @@ export class Resident {
   private _landQuality: number
   private _activity: Activity
 
-  constructor(name: string, trait: Trait, tokens: number, sustenance: number, consumable: number, landQuality: number) {
+  constructor(name: string, behaviouralTrait: BehaviouralTrait, tokens: number, sustenance: number, consumable: number, landQuality: number, activity: Activity) {
     this._id = Resident.nextId++
     this._name = name
-    this._trait = trait
+    this._behaviouralTrait = behaviouralTrait
     this._status = 'thriving'
     this._occupation = 'owner'
     this._tokens = tokens ? tokens : 0
-    this._sustenance = 0
+    this._sustenance = sustenance ? sustenance : 0
     this._consumable = consumable ? consumable : 0
     this._landQuality = landQuality
-    this._activity = 'idle'
+    this._activity = activity
   }
 
   get id(): number { return this._id }
   get name(): string { return this._name }
-  get trait(): Trait { return this._trait }
+  get behaviouralTrait(): BehaviouralTrait { return this._behaviouralTrait }
   get status(): ResidentStatus { return this._status }
   get occupation(): ResidentOccupation { return this._occupation }
   get tokens(): number { return this._tokens }
@@ -61,13 +61,13 @@ export class Resident {
 
   addConsumable(amount: number) {
     this._consumable += amount
-    if (this._consumable >= 2) this.setStatus('thriving')
+    if (this._consumable >= 7) this.setStatus('thriving')
   }
 
   removeConsumable(amount: number) {
     this._consumable = Math.max(0, this._consumable - amount)
     if (this._consumable === 0) this.setStatus('deceased')
-    else if (this._consumable <= 2) this.setStatus('deprived')
+    else if (this._consumable <= 7) this.setStatus('deprived')
   }
 
   improveLandQuality(multiplier: number) {
@@ -78,11 +78,60 @@ export class Resident {
     this._activity == activity
   }
 
+  decideNextAction() {
+    // Estimate how likely is the resident to make life changes
+    const internal = this.evalInternalScore()
+    const external = this.evalExternalScore()
+
+    const internalBias = 0.4
+    const externalBias = 0.6
+
+    const combined = (internal * internalBias + external * externalBias)
+    const threshold = Math.random()
+
+    if (combined > threshold) {
+      this._activity = 'mining'
+    } else {
+      this._activity = 'producing'
+    }
+  }
+
+  evalInternalScore(): number {
+    let pBase = 0.5
+
+    if (this._behaviouralTrait === 'inventor') pBase *= 0.9
+    else if (this._behaviouralTrait === 'risk-taker') pBase *= 1.2
+
+    return pBase
+  }
+
+  evalExternalScore(): number {
+    let pBase = 0.5
+
+    if (this._landQuality > 1) return pBase *= 0.5
+    else return pBase *= 1
+  }
+
+  produce() {
+    if (this._activity === 'producing') {
+      // Basic sustenance output influenced by land quality
+      const baseProduction = 20
+      const landMultiplier = this._landQuality || 1
+      this._consumable = Math.round(baseProduction * landMultiplier)
+
+    } else if (this._activity === 'mining') {
+      // Mining produces tokens, not sustenance
+      const baseMining = 5
+      const miningLuck = Math.random() * 2 // adds some randomness
+      this._tokens = Math.round(baseMining * miningLuck)
+    }
+  }
+
   toJSON(): object {
     return {
       id: this._id,
       name: this._name,
-      trait: this._trait,
+      behaviouralTrait: this.behaviouralTrait,
       status: this._status,
       occupation: this._occupation,
       tokens: this._tokens,

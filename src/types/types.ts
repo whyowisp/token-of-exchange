@@ -94,15 +94,15 @@ export type SimulationStore = {
 }
 
 /* Resident related types */
+export type BehaviouralTrait = 'inventor' | 'risk-taker' | 'sustainer'
 export type ResidentStatus = 'thriving' | 'deprived' | 'deceased'
 export type ResidentOccupation = 'owner' | 'employee' | 'unemployed'
-export type Trait = 'inventor' | 'risk-taker' | 'sustainer'
 export type Activity = 'producing' | 'mining' | 'idle'
 
 export interface ResidentData {
   id: number
   name: string
-  trait: Trait
+  trait: BehaviouralTrait
   status: ResidentStatus
   occupation: ResidentOccupation
   tokens: number
@@ -111,3 +111,16 @@ export interface ResidentData {
   landQuality: number
   activity: Activity
 }
+
+/* World factors */
+export interface EconomicIndicators {
+  averageSustenancePrice: number
+  goldDemand: number
+  workshopSaturation: number
+  availableJobs: {
+    sustenance: number
+    mining: number
+    innovation: number
+  }
+}
+

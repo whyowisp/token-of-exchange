@@ -1,12 +1,15 @@
-import { Resident } from '../../models/Resident'
 import type {
   SimulationStore,
   BankingMode,
   GovernanceMode,
   TaxType,
-  TaxConfig
+  TaxConfig,
+  BehaviouralTrait
 } from '../../types/types'
+import { Resident } from '../../models/Resident'
 import { create } from 'zustand'
+import { randomGaussian } from '../../utility/math'
+
 
 const names = [
   'Alice',
@@ -31,8 +34,27 @@ const names = [
   'Trent',
 ]
 
+const pickTrait = (index: number): BehaviouralTrait => {
+  const traitP = {
+    sustainer: 0.6,
+    riskTaker: 0.2,
+    inventor: 0.2,
+  }
+  const rnd = Math.random()
+  if (rnd < traitP.sustainer) return 'sustainer'
+  if (rnd < traitP.sustainer + traitP.riskTaker) return 'risk-taker'
+  return 'inventor'
+}
+
 const createResidents = (): Array<Resident> => {
-  return names.slice(0, 10).map((name) => new Resident(name, 'sustainer', 5))
+  const residents = names.slice(0, 10).map((name, index) => {
+    const landQuality = randomGaussian(1, 0.5)
+    const behaviouralTrait = pickTrait(index)
+    return new Resident(name, behaviouralTrait, 0, 0, 10, landQuality, 'idle')
+  })
+
+  console.log(residents.forEach((r) => console.log(JSON.stringify(r))))
+  return residents
 }
 
 export const useSimulationStore = create<SimulationStore>((set) => ({
@@ -69,24 +91,32 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
         // Create a new resident instance with updated properties
         const updatedResident = new Resident(
           resident.name,
-          resident.trait,
-          resident.tokens
+          resident.behaviouralTrait,
+          resident.tokens,
+          resident.sustenance,
+          resident.consumable,
+          resident.landQuality,
+          resident.activity
         )
 
-        // Copy over current state
-        updatedResident.setStatus(resident.status)
-        //updatedResident.setOccupation(resident.occupation)
-        updatedResident.addTokens(-1)
+        // Simulation logic
 
-        // Add your simulation logic here
-        // Example:
-        if (updatedResident.tokens < 4) {
-          updatedResident.setStatus('deprived')
-        }
-        if (updatedResident.tokens < 2) {
-          updatedResident.setStatus('deceased')
+        // Daily actions
+        // Use 1 consumable
+        updatedResident.removeConsumable(1)
+
+        // Weekly actions (7 iterations)
+        if (state.tickCount % 7 === 0) {
+          updatedResident.decideNextAction() // resident.decideNextAction(economicIndicators)
         }
 
+
+        // Monthly
+        // calculate economic meters.  should be done elsewhere and read here
+
+        // Produce       
+        updatedResident.produce()
+        console.log(JSON.stringify(updatedResident))
         return updatedResident
       })
       return { residents: updatedResidents }
