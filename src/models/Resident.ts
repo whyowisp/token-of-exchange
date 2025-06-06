@@ -19,15 +19,22 @@ export class Resident {
   private _landQuality: number
   private _activity: Activity
 
-  constructor(name: string, behaviouralTrait: BehaviouralTrait, tokens: number, sustenance: number, consumable: number, landQuality: number, activity: Activity) {
+  constructor(
+    name: string,
+    behaviouralTrait: BehaviouralTrait,
+    status: ResidentStatus,
+    tokens: number, sustenance: number,
+    consumable: number,
+    landQuality: number,
+    activity: Activity) {
     this._id = Resident.nextId++
     this._name = name
     this._behaviouralTrait = behaviouralTrait
-    this._status = 'thriving'
+    this._status = status
     this._occupation = 'owner'
-    this._tokens = tokens ? tokens : 0
-    this._sustenance = sustenance ? sustenance : 0
-    this._consumable = consumable ? consumable : 0
+    this._tokens = tokens ?? 0
+    this._sustenance = sustenance ?? 0
+    this._consumable = consumable ?? 0
     this._landQuality = landQuality
     this._activity = activity
   }
@@ -114,16 +121,13 @@ export class Resident {
 
   produce() {
     if (this._activity === 'producing') {
-      // Basic sustenance output influenced by land quality
-      const baseProduction = 20
+      const baseProduction = 1
       const landMultiplier = this._landQuality || 1
-      this._consumable = Math.round(baseProduction * landMultiplier)
-
+      this._consumable += Math.round(baseProduction * landMultiplier)  // add to existing consumable
     } else if (this._activity === 'mining') {
-      // Mining produces tokens, not sustenance
-      const baseMining = 5
-      const miningLuck = Math.random() * 2 // adds some randomness
-      this._tokens = Math.round(baseMining * miningLuck)
+      const baseMining = 1
+      const miningLuck = Math.random() * 2
+      this._tokens += Math.round(baseMining * miningLuck)  // add to existing tokens
     }
   }
 

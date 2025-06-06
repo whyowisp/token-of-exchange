@@ -50,10 +50,8 @@ const createResidents = (): Array<Resident> => {
   const residents = names.slice(0, 10).map((name, index) => {
     const landQuality = randomGaussian(1, 0.5)
     const behaviouralTrait = pickTrait(index)
-    return new Resident(name, behaviouralTrait, 0, 0, 10, landQuality, 'idle')
+    return new Resident(name, behaviouralTrait, 'thriving', 0, 0, 10, landQuality, 'idle')
   })
-
-  console.log(residents.forEach((r) => console.log(JSON.stringify(r))))
   return residents
 }
 
@@ -92,14 +90,16 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
         const updatedResident = new Resident(
           resident.name,
           resident.behaviouralTrait,
+          resident.status,
           resident.tokens,
           resident.sustenance,
           resident.consumable,
           resident.landQuality,
           resident.activity
         )
+        if (resident.status === 'deceased') return updatedResident
 
-        // Simulation logic
+        // *** Simulation logic ***
 
         // Daily actions
         // Use 1 consumable
@@ -110,13 +110,12 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
           updatedResident.decideNextAction() // resident.decideNextAction(economicIndicators)
         }
 
-
         // Monthly
         // calculate economic meters.  should be done elsewhere and read here
 
         // Produce       
         updatedResident.produce()
-        console.log(JSON.stringify(updatedResident))
+
         return updatedResident
       })
       return { residents: updatedResidents }

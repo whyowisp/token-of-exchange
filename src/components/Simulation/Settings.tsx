@@ -30,8 +30,6 @@ const Settings = () => {
   const taxSettings = useSimulationStore((state) => state.taxSettings)
   const setTaxConfig = useSimulationStore((state) => state.setTaxConfig)
 
-  console.log('Enabled Taxes:', taxSettings)
-
   return (
     <Paper sx={{ mb: 2 }} elevation={2}>
       <Container sx={{ p: 2 }}>
