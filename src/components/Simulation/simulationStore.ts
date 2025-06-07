@@ -50,10 +50,16 @@ const createResidents = (): Array<Resident> => {
   const residents = names.slice(0, 10).map((name, index) => {
     const landQuality = randomGaussian(1, 0.5)
     const behaviouralTrait = pickTrait(index)
-    return new Resident(name, behaviouralTrait, 'thriving', 0, 0, 10, landQuality, 'idle')
+    return new Resident(name, behaviouralTrait, 'thriving', 10, 50, 10, landQuality, 'idle')
   })
   return residents
 }
+
+const updatedResident = () => {
+
+}
+
+/* STORE */
 
 export const useSimulationStore = create<SimulationStore>((set) => ({
   bankingMode: 'gold-standard',
@@ -84,9 +90,8 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
 
   update: () =>
     set((state) => {
-      // Create a new array with spread operator to maintain immutability
-      const updatedResidents = [...state.residents].map(resident => {
-        // Create a new resident instance with updated properties
+      // First pass: simulate
+      const updatedResidents = state.residents.map(resident => {
         const updatedResident = new Resident(
           resident.name,
           resident.behaviouralTrait,
@@ -97,26 +102,37 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
           resident.landQuality,
           resident.activity
         )
+
         if (resident.status === 'deceased') return updatedResident
 
-        // *** Simulation logic ***
-
         // Daily actions
-        // Use 1 consumable
         updatedResident.removeConsumable(1)
 
-        // Weekly actions (7 iterations)
+        // Weekly decisions
         if (state.tickCount % 7 === 0) {
-          updatedResident.decideNextAction() // resident.decideNextAction(economicIndicators)
+          updatedResident.decideNextAction()
         }
 
-        // Monthly
-        // calculate economic meters.  should be done elsewhere and read here
-
-        // Produce       
-        updatedResident.produce()
+        // Produce
+        updatedResident.produceSustenance()
 
         return updatedResident
+      })
+
+      // Second pass: resolve trades (when updatedResidents is fully initialized)
+      updatedResidents.forEach((buyer) => {
+        if (buyer.status === 'deceased') return
+
+        if (buyer.consumable < 7) {
+          const tradeResult = buyer.tryBuyConsumables(7, updatedResidents)
+          if (tradeResult) {
+            console.log(tradeResult)
+            const seller = updatedResidents[tradeResult.sellerIndex]
+            seller.removeSustenance(tradeResult.targetAmount)
+            seller.addTokens(tradeResult.targetAmount)
+            console.log('resultl: ', seller.sustenance)
+          }
+        }
       })
       return { residents: updatedResidents }
     }),

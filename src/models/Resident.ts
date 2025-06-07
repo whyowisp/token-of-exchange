@@ -66,6 +66,10 @@ export class Resident {
     this._tokens = Math.max(0, this._tokens - amount)
   }
 
+  removeSustenance(amount: number) {
+    this._sustenance = Math.max(0, this._sustenance - amount)
+  }
+
   addConsumable(amount: number) {
     this._consumable += amount
     if (this._consumable >= 7) this.setStatus('thriving')
@@ -75,6 +79,27 @@ export class Resident {
     this._consumable = Math.max(0, this._consumable - amount)
     if (this._consumable === 0) this.setStatus('deceased')
     else if (this._consumable <= 7) this.setStatus('deprived')
+  }
+
+  tryBuyConsumables(amount: number, sellers: Array<Resident>): { sellerIndex: number, targetAmount: number } | null {
+    let targetAmount = Math.min(amount, this.tokens)
+
+    const sellerIndex = this.pickSeller(sellers)
+
+    const seller = sellers[sellerIndex]
+    if (!seller || seller.sustenance < targetAmount) {
+      return null // No valid trade
+    }
+
+    this.removeTokens(targetAmount)
+    this.addConsumable(targetAmount)
+
+    return { sellerIndex, targetAmount }
+  }
+
+  pickSeller(sellers: Array<Resident>): number {
+    const randomPick = Math.round(Math.random() * 10)
+    return randomPick
   }
 
   improveLandQuality(multiplier: number) {
@@ -96,6 +121,10 @@ export class Resident {
     const combined = (internal * internalBias + external * externalBias)
     const threshold = Math.random()
 
+    // If the internal and external factors are higher, it's more probable to go more risky behaviours
+    // Behaviours from less risky to most: 'producing' -> 'mining' -> 'investing'
+    // Sometimes they go 'idle' for no reason, sickness maybe.
+    // The code needs to be refactored!!!
     if (combined > threshold) {
       this._activity = 'mining'
     } else {
@@ -119,11 +148,11 @@ export class Resident {
     else return pBase *= 1
   }
 
-  produce() {
+  produceSustenance() {
     if (this._activity === 'producing') {
       const baseProduction = 1
       const landMultiplier = this._landQuality || 1
-      this._consumable += Math.round(baseProduction * landMultiplier)  // add to existing consumable
+      this._sustenance += Math.round(baseProduction * landMultiplier)  // add to existing consumable
     } else if (this._activity === 'mining') {
       const baseMining = 1
       const miningLuck = Math.random() * 2
