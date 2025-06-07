@@ -55,8 +55,46 @@ const createResidents = (): Array<Resident> => {
   return residents
 }
 
-const updatedResident = () => {
+const updateResidents = (residents: Array<Resident>, tickCount: number): Array<Resident> => {
+  return residents.map(resident => {
+    const updatedResident = new Resident(
+      resident.name,
+      resident.behaviouralTrait,
+      resident.status,
+      resident.tokens,
+      resident.sustenance,
+      resident.consumable,
+      resident.landQuality,
+      resident.activity
+    )
 
+    if (resident.status === 'deceased') return updatedResident
+
+    // Daily actions
+    updatedResident.removeConsumable(1)
+
+    // Weekly decisions
+    if (tickCount % 7 === 0) {
+      updatedResident.decideNextAction()
+    }
+
+    // Produce
+    updatedResident.produceSustenance()
+
+    return updatedResident
+  })
+}
+
+function resolveTrades(residents: Resident[]): void {
+  residents.forEach(buyer => {
+    if (buyer.status === 'deceased' || buyer.consumable >= 7) return
+
+    const result = buyer.tryBuyConsumables(7, residents)
+    if (result) {
+      const seller = residents[result.sellerIndex]
+      seller.removeSustenance(result.targetAmount)
+    }
+  })
 }
 
 /* STORE */
@@ -88,54 +126,14 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
     set((state) => ({ tickCount: state.tickCount + 1 }))
   },
 
-  update: () =>
+  update: () => {
     set((state) => {
-      // First pass: simulate
-      const updatedResidents = state.residents.map(resident => {
-        const updatedResident = new Resident(
-          resident.name,
-          resident.behaviouralTrait,
-          resident.status,
-          resident.tokens,
-          resident.sustenance,
-          resident.consumable,
-          resident.landQuality,
-          resident.activity
-        )
-
-        if (resident.status === 'deceased') return updatedResident
-
-        // Daily actions
-        updatedResident.removeConsumable(1)
-
-        // Weekly decisions
-        if (state.tickCount % 7 === 0) {
-          updatedResident.decideNextAction()
-        }
-
-        // Produce
-        updatedResident.produceSustenance()
-
-        return updatedResident
-      })
-
-      // Second pass: resolve trades (when updatedResidents is fully initialized)
-      updatedResidents.forEach((buyer) => {
-        if (buyer.status === 'deceased') return
-
-        if (buyer.consumable < 7) {
-          const tradeResult = buyer.tryBuyConsumables(7, updatedResidents)
-          if (tradeResult) {
-            console.log(tradeResult)
-            const seller = updatedResidents[tradeResult.sellerIndex]
-            seller.removeSustenance(tradeResult.targetAmount)
-            seller.addTokens(tradeResult.targetAmount)
-            console.log('resultl: ', seller.sustenance)
-          }
-        }
-      })
+      const updatedResidents = updateResidents(state.residents, state.tickCount)
+      resolveTrades(updatedResidents)
       return { residents: updatedResidents }
-    }),
+    })
+  },
+
   reset: () => {
     set({ isRunning: false })
     set({ tickCount: 0 })
