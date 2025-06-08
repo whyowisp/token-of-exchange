@@ -1,11 +1,7 @@
 import { useState, type ChangeEvent } from 'react'
-import type {
-  SimulationStore,
-  BankingMode,
-  GovernanceMode,
-} from '../../types/types'
+import type { SimulationStore, BankingMode, GovernanceMode } from '../../types/types'
 import { Checkbox } from '@mui/material'
-import { useSimulationStore } from './simulationStore'
+import { useSimulationStore } from '../../store/simulationStore'
 import {
   Container,
   Divider,
@@ -23,9 +19,7 @@ const Settings = () => {
   const setBankingMode = useSimulationStore((state) => state.setBankingMode)
 
   const governanceMode = useSimulationStore((state) => state.governanceMode)
-  const setGovernanceMode = useSimulationStore(
-    (state) => state.setGovernanceMode
-  )
+  const setGovernanceMode = useSimulationStore((state) => state.setGovernanceMode)
 
   const taxSettings = useSimulationStore((state) => state.taxSettings)
   const setTaxConfig = useSimulationStore((state) => state.setTaxConfig)
@@ -46,22 +40,10 @@ const Settings = () => {
             value={bankingMode}
             onChange={(e) => setBankingMode(e.target.value as BankingMode)}
           >
-            <FormControlLabel
-              value="gold-standard"
-              control={<Radio />}
-              label="Gold Standard"
-            />
+            <FormControlLabel value="gold-standard" control={<Radio />} label="Gold Standard" />
             <FormControlLabel value="fiat" control={<Radio />} label="Fiat" />
-            <FormControlLabel
-              value="crypto-like"
-              control={<Radio />}
-              label="Crypto-like"
-            />
-            <FormControlLabel
-              value="government-issued"
-              control={<Radio />}
-              label="Government-issued"
-            />
+            <FormControlLabel value="crypto-like" control={<Radio />} label="Crypto-like" />
+            <FormControlLabel value="government-issued" control={<Radio />} label="Government-issued" />
           </RadioGroup>
         </FormControl>
         <Divider sx={{ marginBottom: 2 }} />
@@ -72,25 +54,11 @@ const Settings = () => {
             aria-labelledby="governance-radio-btn"
             name="governance-mode"
             value={governanceMode}
-            onChange={(e) =>
-              setGovernanceMode(e.target.value as GovernanceMode)
-            }
+            onChange={(e) => setGovernanceMode(e.target.value as GovernanceMode)}
           >
-            <FormControlLabel
-              value="elder-autocratic"
-              control={<Radio />}
-              label="Elder Autocratic"
-            />
-            <FormControlLabel
-              value="trader-led"
-              control={<Radio />}
-              label="Trader-led"
-            />
-            <FormControlLabel
-              value="council"
-              control={<Radio />}
-              label="Council"
-            />
+            <FormControlLabel value="elder-autocratic" control={<Radio />} label="Elder Autocratic" />
+            <FormControlLabel value="trader-led" control={<Radio />} label="Trader-led" />
+            <FormControlLabel value="council" control={<Radio />} label="Council" />
           </RadioGroup>
         </FormControl>
         <Divider sx={{ marginBottom: 2 }} />

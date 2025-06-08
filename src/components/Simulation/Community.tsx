@@ -5,7 +5,7 @@ import SentimentVeryDissatisfiedSharpIcon from '@mui/icons-material/SentimentVer
 import SentimentNeutralSharpIcon from '@mui/icons-material/SentimentNeutralSharp'
 import type { Resident } from '../../models/Resident'
 import type { ResidentStatus } from '../../types/types'
-import { useSimulationStore } from './simulationStore'
+import { useSimulationStore } from '../../store/simulationStore'
 
 const headers = ['Resident', '🍕', '🥮', 'Occupation', '🌾', 'Actions']
 

@@ -55,6 +55,15 @@ export interface PageProps {
   content: React.ReactNode
 }
 
+/* Helper Data types */
+
+export interface TradeData {
+  buyerIndex: number
+  tokenAmount: number
+  sellerIndex: number
+  consumableAmount: number
+}
+
 /* Simulation Settings Types */
 export type BankingMode = 'fiat' | 'gold-standard' | 'crypto-like' | 'government-issued'
 export type GovernanceMode = 'elder-autocratic' | 'trader-led' | 'council'
@@ -89,6 +98,21 @@ export type SimulationStore = {
 
   totalTicks: number
   addTick: () => void
+}
+
+/* Zustand Resident Feed Store Types */
+export type FeedEntry = {
+  tick: number
+  residentId: number
+  message: string
+}
+
+export type ResidentFeedStore = {
+  feed: FeedEntry[]
+  addEntry: (entry: FeedEntry) => void
+  getFeedForResident: (residentId: number) => FeedEntry[]
+  getGlobalFeed: () => FeedEntry[]
+  clearFeed: () => void
 }
 
 /* Resident related types */

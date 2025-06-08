@@ -1,5 +1,5 @@
 import { Toolbar, Box, Button, Slider, Typography } from '@mui/material'
-import { useSimulationStore } from './simulationStore'
+import { useSimulationStore } from '../../store/simulationStore'
 
 const ToolBar = () => {
   const isRunning = useSimulationStore((state) => state.isRunning)

@@ -1,32 +1,27 @@
-import {
-  Box,
-  Container,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Paper,
-  Typography,
-} from '@mui/material'
+import { Box, Divider, ListItem, ListItemText, Paper, Typography } from '@mui/material'
 import { FixedSizeList, FixedSizeList as List } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { theme } from '../../styles/theme'
+import { useResidentFeedStore } from '../../store/residentFeedStore'
 
 interface RowProps {
   index: number
   style: React.CSSProperties
+  data: { residentFeed: { residentId: string; message: string }[] }
 }
 
-const renderRow = ({ index, style }: RowProps) => {
+const renderRow = ({ index, style, data }: RowProps) => {
+  const feed = data.residentFeed[index]
+  if (!feed) return null
   return (
-    <ListItem style={style} key={index} component="div" disablePadding>
-      <ListItemButton>
-        <ListItemText primary={`Item ${index + 1}`} />
-      </ListItemButton>
+    <ListItem dense style={style} key={feed.residentId} disablePadding>
+      <ListItemText primary={feed.message} />
     </ListItem>
   )
 }
 
 const Feed = () => {
+  const residentFeed = useResidentFeedStore((state) => state.feed)
+
   return (
     <Paper sx={{ p: 2 }} elevation={2}>
       <Typography variant="h6" gutterBottom>
@@ -45,8 +40,14 @@ const Feed = () => {
               height={height}
               width={width}
               itemSize={40}
-              itemCount={200}
+              itemCount={residentFeed.length}
               overscanCount={5}
+              itemData={{
+                residentFeed: residentFeed.map((feed) => ({
+                  ...feed,
+                  residentId: String(feed.residentId),
+                })),
+              }}
             >
               {renderRow}
             </FixedSizeList>

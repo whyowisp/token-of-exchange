@@ -98,7 +98,7 @@ export class Resident {
     else if (this._consumable <= 7) this.setStatus('deprived')
   }
 
-  tryBuyConsumables(amount: number, sellers: Array<Resident>): { sellerIndex: number; targetAmount: number } | null {
+  tryBuyConsumables(amount: number, sellers: Resident[]): { sellerIndex: number; tokenAmount: number; consumableAmount: number } | null {
     let targetAmount = Math.min(amount, this.tokens)
 
     const sellerIndex = this.pickSeller(sellers, targetAmount)
@@ -108,18 +108,24 @@ export class Resident {
       return null // No valid trade
     }
 
-    this.removeTokens(targetAmount)
-    this.addConsumable(targetAmount)
+    // TODO add calculations about the trade details
+    const tokenAmount = targetAmount
+    const consumableAmount = targetAmount
 
-    return { sellerIndex, targetAmount }
+    this.removeTokens(tokenAmount)
+    this.addConsumable(consumableAmount)
+
+    return { sellerIndex, tokenAmount, consumableAmount }
   }
 
-  pickSeller(sellers: Array<Resident>, targetAmount: number): number {
+  pickSeller(sellers: Resident[], targetAmount: number): number {
     const availableSellers = sellers.filter(s => s.sustenance >= targetAmount)
 
     if (availableSellers.length === 0) {
       return -1
     }
+
+    // TODO pick a seller based on price and availability
     const randomIndex = Math.floor(Math.random() * availableSellers.length)
 
     return sellers.findIndex(s => s === availableSellers[randomIndex])
