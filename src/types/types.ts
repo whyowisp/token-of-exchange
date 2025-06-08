@@ -78,19 +78,17 @@ export type SimulationStore = {
   residents: Resident[] // With a risk of duplicates. The map function is used from Array very often.
   setResidents: (residents: Resident[]) => void
 
-  tickCount: number
-  addTick: () => void
-
-  update: () => void
   reset: () => void
 
   isRunning: boolean
   start: () => void
   stop: () => void
 
-
   tickRate: number
   setTickRate: (value: number) => void
+
+  totalTicks: number
+  addTick: () => void
 }
 
 /* Resident related types */

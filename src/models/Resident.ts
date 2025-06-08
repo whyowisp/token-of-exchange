@@ -1,12 +1,7 @@
-import type {
-  ResidentStatus,
-  BehaviouralTrait,
-  ResidentOccupation,
-  Activity,
-} from '../types/types'
+import type { ResidentStatus, BehaviouralTrait, ResidentOccupation, Activity } from '../types/types'
 
 export class Resident {
-  private static nextId = 1;
+  private static nextId = 1
 
   readonly _id: number
   readonly _name: string
@@ -23,10 +18,12 @@ export class Resident {
     name: string,
     behaviouralTrait: BehaviouralTrait,
     status: ResidentStatus,
-    tokens: number, sustenance: number,
+    tokens: number,
+    sustenance: number,
     consumable: number,
     landQuality: number,
-    activity: Activity) {
+    activity: Activity
+  ) {
     this._id = Resident.nextId++
     this._name = name
     this._behaviouralTrait = behaviouralTrait
@@ -39,16 +36,36 @@ export class Resident {
     this._activity = activity
   }
 
-  get id(): number { return this._id }
-  get name(): string { return this._name }
-  get behaviouralTrait(): BehaviouralTrait { return this._behaviouralTrait }
-  get status(): ResidentStatus { return this._status }
-  get occupation(): ResidentOccupation { return this._occupation }
-  get tokens(): number { return this._tokens }
-  get sustenance(): number { return this._sustenance }
-  get consumable(): number { return this._consumable }
-  get landQuality(): number { return this._landQuality }
-  get activity(): Activity { return this._activity }
+  get id(): number {
+    return this._id
+  }
+  get name(): string {
+    return this._name
+  }
+  get behaviouralTrait(): BehaviouralTrait {
+    return this._behaviouralTrait
+  }
+  get status(): ResidentStatus {
+    return this._status
+  }
+  get occupation(): ResidentOccupation {
+    return this._occupation
+  }
+  get tokens(): number {
+    return this._tokens
+  }
+  get sustenance(): number {
+    return this._sustenance
+  }
+  get consumable(): number {
+    return this._consumable
+  }
+  get landQuality(): number {
+    return this._landQuality
+  }
+  get activity(): Activity {
+    return this._activity
+  }
 
   setStatus(status: ResidentStatus) {
     this._status = status
@@ -81,10 +98,10 @@ export class Resident {
     else if (this._consumable <= 7) this.setStatus('deprived')
   }
 
-  tryBuyConsumables(amount: number, sellers: Array<Resident>): { sellerIndex: number, targetAmount: number } | null {
+  tryBuyConsumables(amount: number, sellers: Array<Resident>): { sellerIndex: number; targetAmount: number } | null {
     let targetAmount = Math.min(amount, this.tokens)
 
-    const sellerIndex = this.pickSeller(sellers)
+    const sellerIndex = this.pickSeller(sellers, targetAmount)
 
     const seller = sellers[sellerIndex]
     if (!seller || seller.sustenance < targetAmount) {
@@ -97,9 +114,15 @@ export class Resident {
     return { sellerIndex, targetAmount }
   }
 
-  pickSeller(sellers: Array<Resident>): number {
-    const randomPick = Math.round(Math.random() * 10)
-    return randomPick
+  pickSeller(sellers: Array<Resident>, targetAmount: number): number {
+    const availableSellers = sellers.filter(s => s.sustenance >= targetAmount)
+
+    if (availableSellers.length === 0) {
+      return -1
+    }
+    const randomIndex = Math.floor(Math.random() * availableSellers.length)
+
+    return sellers.findIndex(s => s === availableSellers[randomIndex])
   }
 
   improveLandQuality(multiplier: number) {
@@ -118,7 +141,7 @@ export class Resident {
     const internalBias = 0.4
     const externalBias = 0.6
 
-    const combined = (internal * internalBias + external * externalBias)
+    const combined = internal * internalBias + external * externalBias
     const threshold = Math.random()
 
     // If the internal and external factors are higher, it's more probable to go more risky behaviours
@@ -144,19 +167,19 @@ export class Resident {
   evalExternalScore(): number {
     let pBase = 0.5
 
-    if (this._landQuality > 1) return pBase *= 0.5
-    else return pBase *= 1
+    if (this._landQuality > 1) return (pBase *= 0.5)
+    else return (pBase *= 1)
   }
 
   produceSustenance() {
     if (this._activity === 'producing') {
-      const baseProduction = 1
+      const baseProduction = 2
       const landMultiplier = this._landQuality || 1
-      this._sustenance += Math.round(baseProduction * landMultiplier)  // add to existing consumable
+      this._sustenance += Math.round(baseProduction * landMultiplier) // add to existing consumable
     } else if (this._activity === 'mining') {
-      const baseMining = 1
+      const baseMining = 2
       const miningLuck = Math.random() * 2
-      this._tokens += Math.round(baseMining * miningLuck)  // add to existing tokens
+      this._tokens += Math.round(baseMining * miningLuck) // add to existing tokens
     }
   }
 
@@ -171,7 +194,7 @@ export class Resident {
       sustenance: this._sustenance,
       consumable: this._consumable,
       landQuality: this._landQuality,
-      activity: this._activity
+      activity: this._activity,
     }
   }
 }

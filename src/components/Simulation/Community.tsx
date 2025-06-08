@@ -1,20 +1,11 @@
-import {
-  Chip,
-  Container,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material'
+import { Chip, Container, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 
 import EmojiEmotionsSharpIcon from '@mui/icons-material/EmojiEmotionsSharp'
 import SentimentVeryDissatisfiedSharpIcon from '@mui/icons-material/SentimentVeryDissatisfiedSharp'
 import SentimentNeutralSharpIcon from '@mui/icons-material/SentimentNeutralSharp'
 import type { Resident } from '../../models/Resident'
 import type { ResidentStatus } from '../../types/types'
+import { useSimulationStore } from './simulationStore'
 
 const headers = ['Resident', '🍕', '🥮', 'Occupation', '🌾', 'Actions']
 
@@ -22,9 +13,7 @@ interface CommunityProps {
   residents: Array<Resident>
 }
 
-const mapStatusIcon = (
-  status: ResidentStatus
-): React.ElementType | undefined => {
+const mapStatusIcon = (status: ResidentStatus): React.ElementType | undefined => {
   if (status === 'thriving') return EmojiEmotionsSharpIcon
   if (status === 'deprived') return SentimentNeutralSharpIcon
   if (status === 'deceased') return SentimentVeryDissatisfiedSharpIcon
@@ -40,18 +29,17 @@ const RenderResidentChip = ({ resident }: { resident: Resident }) => {
   return (
     <Chip
       sx={{ ml: 0 }}
-      icon={
-        Icon && (
-          <Icon color={resident.status === 'thriving' ? 'thriving' : ''} />
-        )
-      }
+      icon={Icon && <Icon color={resident.status === 'thriving' ? 'thriving' : ''} />}
       label={resident.name + ' ' + traitMark}
       disabled={resident.status === 'deceased'}
     />
   )
 }
 
-const Community: React.FC<CommunityProps> = ({ residents }) => {
+const Community = () => {
+  //const setIsUpdating = useSimulationStore((state) => state.setIsUpdating)
+  const residents = useSimulationStore((state) => state.residents)
+
   return (
     <Paper sx={{ mb: 2 }} elevation={2}>
       <Container sx={{ p: 2 }}>

@@ -5,13 +5,13 @@ const ToolBar = () => {
   const isRunning = useSimulationStore((state) => state.isRunning)
   const tickRate = useSimulationStore((state) => state.tickRate)
   const setTickRate = useSimulationStore((state) => state.setTickRate)
+  const totalTicks = useSimulationStore((state) => state.totalTicks)
 
   const start = useSimulationStore((state) => state.start)
   const stop = useSimulationStore((state) => state.stop)
   const reset = useSimulationStore((state) => state.reset)
 
-  // Ticks for debugging
-  const tickCount = useSimulationStore((state) => state.tickCount)
+  const residents = useSimulationStore((state) => state.residents)
   return (
     <Toolbar>
       <Box sx={{ flexGrow: 2, display: { xs: 'flex' } }}>
@@ -50,7 +50,7 @@ const ToolBar = () => {
           step={500}
           marks
           min={0}
-          max={5000}
+          max={10000}
           valueLabelDisplay="auto"
           onChange={(_, newValue) => {
             stop()
@@ -58,7 +58,7 @@ const ToolBar = () => {
           }}
         />
         <Typography sx={{ m: 1, fontFamily: 'monospace' }}>
-          Days: {tickCount}
+          Days: {Math.floor(totalTicks / residents.length || 0)}
         </Typography>
         <Typography
           variant="overline"

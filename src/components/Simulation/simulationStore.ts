@@ -10,7 +10,6 @@ import { Resident } from '../../models/Resident'
 import { create } from 'zustand'
 import { randomGaussian } from '../../utility/math'
 
-
 const names = [
   'Alice',
   'Bob',
@@ -34,7 +33,7 @@ const names = [
   'Trent',
 ]
 
-const pickTrait = (index: number): BehaviouralTrait => {
+const pickTrait = (): BehaviouralTrait => {
   const traitP = {
     sustainer: 0.6,
     riskTaker: 0.2,
@@ -47,54 +46,12 @@ const pickTrait = (index: number): BehaviouralTrait => {
 }
 
 const createResidents = (): Array<Resident> => {
-  const residents = names.slice(0, 10).map((name, index) => {
+  const residents = names.slice(0, 10).map((name) => {
     const landQuality = randomGaussian(1, 0.5)
-    const behaviouralTrait = pickTrait(index)
-    return new Resident(name, behaviouralTrait, 'thriving', 10, 50, 10, landQuality, 'idle')
+    const behaviouralTrait = pickTrait()
+    return new Resident(name, behaviouralTrait, 'thriving', 20, 10, 10, landQuality, 'idle')
   })
   return residents
-}
-
-const updateResidents = (residents: Array<Resident>, tickCount: number): Array<Resident> => {
-  return residents.map(resident => {
-    const updatedResident = new Resident(
-      resident.name,
-      resident.behaviouralTrait,
-      resident.status,
-      resident.tokens,
-      resident.sustenance,
-      resident.consumable,
-      resident.landQuality,
-      resident.activity
-    )
-
-    if (resident.status === 'deceased') return updatedResident
-
-    // Daily actions
-    updatedResident.removeConsumable(1)
-
-    // Weekly decisions
-    if (tickCount % 7 === 0) {
-      updatedResident.decideNextAction()
-    }
-
-    // Produce
-    updatedResident.produceSustenance()
-
-    return updatedResident
-  })
-}
-
-function resolveTrades(residents: Resident[]): void {
-  residents.forEach(buyer => {
-    if (buyer.status === 'deceased' || buyer.consumable >= 7) return
-
-    const result = buyer.tryBuyConsumables(7, residents)
-    if (result) {
-      const seller = residents[result.sellerIndex]
-      seller.removeSustenance(result.targetAmount)
-    }
-  })
 }
 
 /* STORE */
@@ -118,32 +75,25 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
     })
   },
 
-  residents: [],
+  residents: createResidents(), // Residents single source of truth
   setResidents: (residents: Resident[]) => set({ residents }),
-
-  tickCount: 0,
-  addTick: () => {
-    set((state) => ({ tickCount: state.tickCount + 1 }))
-  },
-
-  update: () => {
-    set((state) => {
-      const updatedResidents = updateResidents(state.residents, state.tickCount)
-      resolveTrades(updatedResidents)
-      return { residents: updatedResidents }
-    })
-  },
 
   reset: () => {
     set({ isRunning: false })
-    set({ tickCount: 0 })
+    set({ totalTicks: 0 })
     set({ residents: createResidents() })
   },
+
+  totalTicks: 0,
+  addTick: () => {
+    console.log('adding tick')
+    set((state) => ({ totalTicks: state.totalTicks + 1 }))
+  },
+
+  tickRate: 1000,
+  setTickRate: (value: number) => set({ tickRate: value }),
 
   isRunning: false,
   start: () => set({ isRunning: true }),
   stop: () => set({ isRunning: false }),
-
-  tickRate: 1000,
-  setTickRate: (value: number) => set({ tickRate: value }),
 }))
