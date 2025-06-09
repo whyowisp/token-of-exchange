@@ -1,4 +1,5 @@
-import type { ResidentStatus, BehaviouralTrait, ResidentOccupation, Activity } from '../types/types'
+import { update } from 'lodash'
+import type { ResidentStatus, BehaviouralTrait, ResidentOccupation, Activity, MarketOffer, Trade } from '../types/types'
 
 export class Resident {
   private static nextId = 1
@@ -98,24 +99,44 @@ export class Resident {
     else if (this._consumable <= 7) this.setStatus('deprived')
   }
 
-  tryBuyConsumables(amount: number, sellers: Resident[]): { sellerIndex: number; tokenAmount: number; consumableAmount: number } | null {
-    let targetAmount = Math.min(amount, this.tokens)
+  tryBuyConsumables(marketOffer: MarketOffer, trade: Trade): Trade | null {
+    const WEEKLY_NEED = 7
+    const remainingNeed = Math.max(0, WEEKLY_NEED - this.consumable)
 
-    const sellerIndex = this.pickSeller(sellers, targetAmount)
-
-    const seller = sellers[sellerIndex]
-    if (!seller || seller.sustenance < targetAmount) {
-      return null // No valid trade
+    if (!marketOffer || marketOffer.price <= 0) {
+      console.warn(`[Trade] Invalid market offer`, marketOffer)
+      return null
+    }
+    if (this.status === 'deceased') {
+      console.info(`[Trade] Buyer ${this.id} is deceased`)
+      return null
+    }
+    if (this.consumable >= WEEKLY_NEED) {
+      console.info(`[Trade] Buyer ${this.id} already has enough`)
+      return null
     }
 
-    // TODO add calculations about the trade details
-    const tokenAmount = targetAmount
-    const consumableAmount = targetAmount
+    // Calculate trade amounts
+    const maxAffordable = Math.floor(this.tokens / marketOffer.price)
+    const ableToBuy = Math.min(maxAffordable, remainingNeed)
+    const tradeAmount = Math.min(marketOffer.available, ableToBuy)
 
-    this.removeTokens(tokenAmount)
-    this.addConsumable(consumableAmount)
+    // Validate final trade amount
+    if (tradeAmount <= 0) return null
 
-    return { sellerIndex, tokenAmount, consumableAmount }
+    const totalCost = tradeAmount * marketOffer.price
+
+    // Validate buyer has enough tokens
+    if (totalCost > this.tokens) return null
+
+    this.removeTokens(totalCost)
+    this.addConsumable(tradeAmount)
+
+    return {
+      ...trade,
+      tokenAmount: totalCost,
+      productAmount: tradeAmount
+    }
   }
 
   pickSeller(sellers: Resident[], targetAmount: number): number {
@@ -179,11 +200,11 @@ export class Resident {
 
   produceSustenance() {
     if (this._activity === 'producing') {
-      const baseProduction = 2
+      const baseProduction = 2.5
       const landMultiplier = this._landQuality || 1
       this._sustenance += Math.round(baseProduction * landMultiplier) // add to existing consumable
     } else if (this._activity === 'mining') {
-      const baseMining = 2
+      const baseMining = 1.9
       const miningLuck = Math.random() * 2
       this._tokens += Math.round(baseMining * miningLuck) // add to existing tokens
     }

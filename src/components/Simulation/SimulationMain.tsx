@@ -2,14 +2,17 @@ import { useEffect } from 'react'
 import { Grid, Stack } from '@mui/material'
 import { useSimulationStore } from '../../store/simulationStore'
 import { useResidentFeedStore } from '../../store/residentFeedStore'
-import { processSingleResidentLifeCycle, resolveSingleTrade } from './residentFunctions'
+import { processResidentDailyActivities } from './residentFunctions'
+import { resolveSingleTrade } from './tradeFunctions'
 
 import Settings from './Settings'
 import Metrics from './Metrics'
 import Community from './Community'
 import Feed from './Feed'
 import ToolBar from './ToolBar'
-import type { FeedEntry } from '../../types/types'
+import type { FeedEntry, Trade } from '../../types/types'
+import { findMarketOffer } from './tradeFunctions'
+import type { Resident } from '../../models/Resident'
 
 const SimulationMain = () => {
   const isRunning = useSimulationStore((state) => state.isRunning)
@@ -18,21 +21,24 @@ const SimulationMain = () => {
   const totalTicks = useSimulationStore((state) => state.totalTicks)
   const setResidents = useSimulationStore((state) => state.setResidents)
   const addTick = useSimulationStore((state) => state.addTick)
+  const addTrade = useSimulationStore((state) => state.addTrade)
 
   const addEntry = useResidentFeedStore((state) => state.addEntry)
 
-  const createFeedEntry = (resolved: any, idx: number): FeedEntry | null => {
-    const { tokenAmount, consumableAmount, sellerIndex } = resolved.tradeData
-    if (tokenAmount == 0 || consumableAmount == 0) return null
+  const createFeedEntry = (resolved: { residents: Resident[]; trade: Trade }): FeedEntry | null => {
+    const { buyerId, sellerId, tokenAmount, productAmount } = resolved.trade
 
-    const message = `${residents[idx].name} bought 
-      ${consumableAmount} 🌾 from 
-      ${residents[sellerIndex].name} with 
-      ${tokenAmount} 🥮`
+    const buyer = residents.find((r) => r.id === buyerId)
+    const sellerName = residents.find((r) => r.id === sellerId)?.name
+
+    const message = `${buyer.name} bought 
+      ${productAmount}🌾 from 
+      ${sellerName} with 
+      ${tokenAmount}🥮`
 
     return {
       tick: totalTicks,
-      residentId: idx,
+      residentId: buyer?.id || 0,
       message,
     }
   }
@@ -42,15 +48,40 @@ const SimulationMain = () => {
     const interval = setInterval(() => {
       try {
         addTick()
-
         const idx = totalTicks % residents.length
-        const updated = processSingleResidentLifeCycle([...residents], totalTicks + 1, idx)
-        const resolved = resolveSingleTrade(updated, idx)
-        console.log(resolved.tradeData)
-        setResidents(resolved.residents)
+        const updatedResidents = [...residents]
 
-        const feedEntry = createFeedEntry(resolved, idx)
-        if (feedEntry) addEntry(feedEntry)
+        /* Daily Activities */
+        // Producing, consuming. Making life changes, getting job, starting company
+        const resident = updatedResidents[idx]
+        const dailyResident = processResidentDailyActivities(resident)
+        updatedResidents[idx] = dailyResident
+
+        // Check the markets
+        const marketOffer = findMarketOffer(dailyResident, updatedResidents)
+
+        if (marketOffer) {
+          const communityTraded = resolveSingleTrade(updatedResidents, dailyResident, marketOffer, totalTicks)
+          if (communityTraded) {
+            setResidents(communityTraded.residents)
+            addTrade(communityTraded.tradeData)
+
+            const feedEntry = createFeedEntry(communityTraded)
+            if (feedEntry) addEntry(feedEntry)
+          } else {
+            // If no trade happened, still update with daily activities
+            setResidents(updatedResidents)
+          }
+        } else {
+          // If no market offer found, still update with daily activities
+          setResidents(updatedResidents)
+        }
+
+        /* Weekly Activities */
+        // TODO Refactor processSingleResidentLifecycle to separate daily and weekly actions
+
+        /* Monthly Activities */
+        // Update Metrics
       } catch (e) {
         console.error('Simulation error:', e)
         clearInterval(interval)

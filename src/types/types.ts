@@ -55,13 +55,23 @@ export interface PageProps {
   content: React.ReactNode
 }
 
-/* Helper Data types */
+/* Simulation Logic Types */
 
-export interface TradeData {
-  buyerIndex: number
-  tokenAmount: number
+export interface MarketOffer {
+  sellerId: number
   sellerIndex: number
-  consumableAmount: number
+  available: number
+  price: number
+}
+export interface Trade {
+  timestamp?: number
+  buyerId: number
+  sellerId: number
+  sellerType: string
+  product: string
+  price: number
+  tokenAmount: number
+  productAmount: number
 }
 
 /* Simulation Settings Types */
@@ -86,6 +96,10 @@ export type SimulationStore = {
 
   residents: Resident[] // With a risk of duplicates. The map function is used from Array very often.
   setResidents: (residents: Resident[]) => void
+
+  trades: Trade[]
+  addTrade: (trade: Trade) => void
+  //findTrade?
 
   reset: () => void
 

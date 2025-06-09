@@ -7,11 +7,7 @@ import type { Resident } from '../../models/Resident'
 import type { ResidentStatus } from '../../types/types'
 import { useSimulationStore } from '../../store/simulationStore'
 
-const headers = ['Resident', '🍕', '🥮', 'Occupation', '🌾', 'Actions']
-
-interface CommunityProps {
-  residents: Array<Resident>
-}
+const headers = ['Resident', '🍕', '🥮', 'Actions', '🌾']
 
 const mapStatusIcon = (status: ResidentStatus): React.ElementType | undefined => {
   if (status === 'thriving') return EmojiEmotionsSharpIcon
@@ -37,7 +33,6 @@ const RenderResidentChip = ({ resident }: { resident: Resident }) => {
 }
 
 const Community = () => {
-  //const setIsUpdating = useSimulationStore((state) => state.setIsUpdating)
   const residents = useSimulationStore((state) => state.residents)
 
   return (
@@ -65,11 +60,8 @@ const Community = () => {
                 </TableCell>
                 <TableCell align="center">{resident.consumable}</TableCell>
                 <TableCell align="center">{resident.tokens}</TableCell>
-
-                <TableCell align="center">{resident.occupation}</TableCell>
-
-                <TableCell align="center">{resident.sustenance}</TableCell>
                 <TableCell align="center">{resident.activity}</TableCell>
+                <TableCell align="center">{resident.sustenance}</TableCell>
               </TableRow>
             ))}
           </TableBody>
