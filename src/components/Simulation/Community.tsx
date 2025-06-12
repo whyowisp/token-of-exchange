@@ -34,32 +34,6 @@ const RenderResidentChip = ({ resident }: { resident: Resident }) => {
   )
 }
 
-const CircleOfLight = ({ tokens, changed }: { tokens: number; changed: 'increased' | 'decreased' | 'neutral' }) => {
-  return (
-    <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 30,
-        height: 30,
-        borderRadius: '50%',
-        background:
-          changed === 'increased'
-            ? 'rgba(0, 255, 0, 0.2)'
-            : changed === 'decreased'
-            ? 'rgba(255, 0, 0, 0.2)'
-            : 'rgba(128, 128, 128, 0.2)',
-        color: 'white',
-        fontSize: 13,
-        transition: 'background-color 0.3s ease',
-      }}
-    >
-      {tokens}
-    </span>
-  )
-}
-
 interface ResidentWithChanges {
   resident: Resident
   changes: Change[]
@@ -79,6 +53,7 @@ const FlashingTableCell = ({
   changes: Change[]
   align: 'left' | 'center' | 'right' | 'justify' | 'inherit' | undefined
 }) => {
+  const tickRate = useSimulationStore((state) => state.tickRate)
   const [activeColor, setActiveColor] = useState<string | null>(null)
   const POSITIVE_COLOR = 'rgba(76, 175, 80, 0.5)' // Emerald
   const NEGATIVE_COLOR = 'rgba(244, 67, 54, 0.5)' // Classic red
@@ -118,7 +93,7 @@ const FlashingTableCell = ({
       } else {
         setActiveColor(flashes[i])
       }
-    }, 300)
+    }, tickRate / 2) // Convert tick rate to milliseconds
 
     return () => clearInterval(interval)
   }, [changes])
@@ -134,7 +109,7 @@ const FlashingTableCell = ({
           height: 30,
           borderRadius: '50%',
           background: activeColor || 'transparent',
-          transition: 'background-color 0.5s ease',
+          transition: `background-color 0.2s ease`,
         }}
       >
         {children}
