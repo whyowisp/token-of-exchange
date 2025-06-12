@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { Grid, Stack } from '@mui/material'
 import { useSimulationStore } from '../../store/simulationStore'
-import { useResidentFeedStore } from '../../store/residentFeedStore'
 import { processResidentDailyLifecycle } from './residentFunctions'
 import { resolveSingleTrade } from './tradeFunctions'
 
@@ -10,10 +9,9 @@ import Metrics from './Metrics'
 import Community from './Community'
 import Feed from './Feed'
 import ToolBar from './ToolBar'
-import type { FeedEntry, Trade } from '../../types/types'
+import type { FeedEntry } from '../../types/types'
 import { findMarketOffer } from './tradeFunctions'
 import type { Resident } from '../../models/Resident'
-import { set } from 'lodash'
 
 const SimulationMain = () => {
   const isRunning = useSimulationStore((state) => state.isRunning)
@@ -25,7 +23,7 @@ const SimulationMain = () => {
   const activityLogEntries = useSimulationStore((state) => state.activityLogEntries)
   const addActivityLogEntry = useSimulationStore((state) => state.addActivityLogEntry)
 
-  const createFeedEntry = (resolved: { residents: Resident[]; tradeData: Trade }): FeedEntry | null => {
+  /*const createFeedEntry = (resolved: { residents: Resident[]; tradeData: Trade }): FeedEntry | null => {
     const { residents, tradeData } = resolved
     const { buyerId, sellerId, tokenAmount, productAmount } = tradeData
 
@@ -42,7 +40,7 @@ const SimulationMain = () => {
       residentId: buyer?.id || 0,
       message,
     }
-  }
+  }*/
 
   useEffect(() => {
     if (!isRunning) return

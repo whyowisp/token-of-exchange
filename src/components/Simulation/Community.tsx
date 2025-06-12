@@ -7,6 +7,7 @@ import SentimentNeutralSharpIcon from '@mui/icons-material/SentimentNeutralSharp
 import type { Resident } from '../../models/Resident'
 import type { ResidentStatus } from '../../types/types'
 import { useSimulationStore } from '../../store/simulationStore'
+import { last, set, type forEach } from 'lodash'
 
 const headers = ['Resident', '🍕', '🥮', 'Actions', '🌾']
 
@@ -59,20 +60,121 @@ const CircleOfLight = ({ tokens, changed }: { tokens: number; changed: 'increase
   )
 }
 
-const Community = () => {
-  const residents = useSimulationStore((state) => state.residents)
-  const activityLogEntries = useSimulationStore((state) => state.activityLogEntries)
+interface ResidentWithChanges {
+  resident: Resident
+  changes: Change[]
+}
+interface Change {
+  consumables: number
+  tokens: number
+  sustenance: number
+}
+
+const FlashingTableCell = ({
+  children,
+  changes,
+  align,
+}: {
+  children: React.ReactNode
+  changes: Change[]
+  align: 'left' | 'center' | 'right' | 'justify' | 'inherit' | undefined
+}) => {
+  const [activeColor, setActiveColor] = useState<string | null>(null)
+  const POSITIVE_COLOR = 'rgba(76, 175, 80, 0.5)' // Emerald
+  const NEGATIVE_COLOR = 'rgba(244, 67, 54, 0.5)' // Classic red
+  const PRODUCE_COLOR = 'rgba(255, 193, 7, 0.5)' // Warm amber
 
   useEffect(() => {
+    if (!changes || changes.length === 0) {
+      // If no changes, reset immediately
+      setActiveColor(null)
+      return
+    }
+
+    const flashes: string[] = []
+
+    for (const change of changes) {
+      for (const [_, value] of Object.entries(change)) {
+        if (typeof value === 'number' && value !== 0) {
+          flashes.push(value > 0 ? POSITIVE_COLOR : NEGATIVE_COLOR)
+        }
+      }
+    }
+
+    if (flashes.length === 0) {
+      // Changes present, but all were zero → also reset
+      setActiveColor(null)
+      return
+    }
+
+    let i = 0
+    setActiveColor(flashes[i])
+
+    const interval = setInterval(() => {
+      i++
+      if (i >= flashes.length) {
+        clearInterval(interval)
+        setActiveColor(null) // reset to white/transparent
+      } else {
+        setActiveColor(flashes[i])
+      }
+    }, 300)
+
+    return () => clearInterval(interval)
+  }, [changes])
+
+  return (
+    <TableCell align={align}>
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 30,
+          height: 30,
+          borderRadius: '50%',
+          background: activeColor || 'transparent',
+          transition: 'background-color 0.5s ease',
+        }}
+      >
+        {children}
+      </span>
+    </TableCell>
+  )
+}
+
+const Community = () => {
+  const tick = useSimulationStore((state) => state.totalTicks)
+  const residents = useSimulationStore((state) => state.residents)
+  const activityLogEntries = useSimulationStore((state) => state.activityLogEntries)
+  const [residentsWithChanges, setResidentsWithChanges] = useState<ResidentWithChanges[]>([])
+
+  useEffect(() => {
+    const lastTick = activityLogEntries[activityLogEntries.length - 1]?.tick || 0
+
     activityLogEntries.forEach((entry) => {
-      console.log(
-        `Resident ${residents.find((r) => r.id === entry.sourceId)?.name} at tick ${entry.tick}: Action: ${
-          entry.action
-        } changes:`,
-        entry.changes
-      )
+      console.log('Processing entry:', entry)
     })
-  }, [residents])
+
+    const latestChanges = activityLogEntries.filter((entry) => entry.tick === lastTick)
+    console.log('Latest changes at tick', lastTick, ':', latestChanges)
+
+    const residentsWithChanges: ResidentWithChanges[] = residents.map((resident) => {
+      const changes = latestChanges
+        .filter((entry) => entry.sourceId === resident.id)
+        .map((entry) => ({
+          consumables: entry.changes.consumables || 0,
+          tokens: entry.changes.tokens || 0,
+          sustenance: entry.changes.sustenance || 0,
+        }))
+      return {
+        resident,
+        changes,
+      } as ResidentWithChanges
+    })
+    setResidentsWithChanges(residentsWithChanges)
+    console.log('Changes by resident:', residentsWithChanges)
+  }, [activityLogEntries, tick, residents])
 
   return (
     <Paper sx={{ mb: 2 }} elevation={2}>
@@ -92,15 +194,38 @@ const Community = () => {
           </TableHead>
 
           <TableBody>
-            {residents.map((resident) => (
-              <TableRow key={resident.name}>
+            {residentsWithChanges.map((rwc) => (
+              <TableRow key={rwc.resident.id}>
                 <TableCell align="left">
-                  <RenderResidentChip resident={resident} />
+                  <RenderResidentChip resident={rwc.resident} />
                 </TableCell>
-                <TableCell align="center">{resident.consumables}</TableCell>
-                <TableCell align="center">{resident.tokens}</TableCell>
-                <TableCell align="center">{resident.activity}</TableCell>
-                <TableCell align="center">{resident.sustenance}</TableCell>
+                <FlashingTableCell
+                  align="center"
+                  changes={rwc.changes.map((c) => ({
+                    consumables: c.consumables,
+                    tokens: 0,
+                    sustenance: 0,
+                  }))}
+                >
+                  {rwc.resident.consumables}
+                </FlashingTableCell>
+                <FlashingTableCell
+                  align="center"
+                  changes={rwc.changes.map((c) => ({ tokens: c.tokens, consumables: 0, sustenance: 0 }))} // only tokens
+                >
+                  {rwc.resident.tokens}
+                </FlashingTableCell>
+                <TableCell>{rwc.resident.activity}</TableCell>
+                <FlashingTableCell
+                  align="center"
+                  changes={rwc.changes.map((c) => ({
+                    sustenance: c.sustenance,
+                    consumables: 0,
+                    tokens: 0,
+                  }))}
+                >
+                  {rwc.resident.sustenance}
+                </FlashingTableCell>
               </TableRow>
             ))}
           </TableBody>

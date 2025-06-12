@@ -1,5 +1,4 @@
-import { remove } from 'lodash'
-import type { ResidentStatus, BehaviouralTrait, ResidentOccupation, Activity, MarketOffer, Trade, ExchangeLog, ActivityLogEntry } from '../types/types'
+import type { ResidentStatus, BehaviouralTrait, ResidentOccupation, Activity, MarketOffer, ExchangeLog, ActivityLogEntry } from '../types/types'
 
 export class Resident {
   private static nextId = 1
@@ -121,19 +120,16 @@ export class Resident {
     const WEEKLY_NEED = 7
     const remainingNeed = Math.max(0, WEEKLY_NEED - this.consumables)
 
-    console.log(`[Trade] Buyer ${this.name} evaluating offer from seller ${marketOffer.sellerId} for ${marketOffer.available} units at price ${marketOffer.price}`)
-    console.log(`[Trade] Buyer ${this.name} needs ${remainingNeed} more consumables, has ${this.consumables} already`)
-
     if (!marketOffer || marketOffer.price <= 0) {
-      console.warn(`[Trade] Invalid market offer`, marketOffer)
+      //console.warn(`[Trade] Invalid market offer`, marketOffer)
       return null
     }
     if (this.status === 'deceased') {
-      console.info(`[Trade] Buyer ${this.id} is deceased`)
+      //console.info(`[Trade] Buyer ${this.id} is deceased`)
       return null
     }
     if (this.consumables >= WEEKLY_NEED) {
-      console.info(`[Trade] Buyer ${this.name} already has enough`)
+      //console.info(`[Trade] Buyer ${this.name} already has enough`)
       return null
     }
 
@@ -141,12 +137,12 @@ export class Resident {
     const maxAffordable = Math.floor(this.tokens / marketOffer.price)
     const ableToBuy = Math.min(maxAffordable, remainingNeed)
     const tradeAmount = Math.min(marketOffer.available, ableToBuy)
-    console.log(`Trade amount calculated: ${tradeAmount} units for buyer ${this.name}`)
+    //console.log(`Trade amount calculated: ${tradeAmount} units for buyer ${this.name}`)
 
     // Validate final trade amount
     if (tradeAmount <= 0) return null
     if (tradeAmount > marketOffer.available) {
-      console.warn(`[Trade] Not enough available sustenance from seller ${marketOffer.sellerId}`)
+      //console.warn(`[Trade] Not enough available sustenance from seller ${marketOffer.sellerId}`)
       return null
     }
 
@@ -220,7 +216,7 @@ export class Resident {
   produce(): { action: 'produce' | 'mine'; amount: number } | null {
     switch (this._activity) {
       case 'producing': {
-        const baseProduction = 5
+        const baseProduction = 1
         const landMultiplier = this._landQuality || 1
         const amount = Math.round(baseProduction * landMultiplier)
         this.addSustenance(amount)

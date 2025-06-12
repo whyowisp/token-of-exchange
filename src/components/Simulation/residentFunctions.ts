@@ -1,6 +1,5 @@
 import { Resident } from '../../models/Resident'
-import type { BehaviouralTrait, Trade, ActivityLogEntry } from '../../types/types'
-import { useSimulationStore } from "../../store/simulationStore"
+import type { BehaviouralTrait, ActivityLogEntry } from '../../types/types'
 import { randomGaussian } from '../../utility/math'
 
 const names = [
@@ -39,10 +38,10 @@ const pickTrait = (): BehaviouralTrait => {
 }
 
 export const createResidents = (): Array<Resident> => {
-  const residents = names.slice(0, 3).map((name) => {
+  const residents = names.slice(0, 10).map((name) => {
     const landQuality = randomGaussian(1, 0.5)
     const behaviouralTrait = pickTrait()
-    return new Resident(name, behaviouralTrait, 'thriving', 10, 10, 5, landQuality, 'idle', [])
+    return new Resident(name, behaviouralTrait, 'thriving', 10, 10, 10, landQuality, 'idle', [])
   })
   return residents
 }
@@ -87,8 +86,7 @@ export const processResidentDailyLifecycle = (
       addActivityLogEntry(newActivityLogEntry)
     }
   }
-  const removeResult = newResident.removeConsumables(3)
-  console.log(`Resident ${newResident.name} at tick ${tick}: Removed consumables: ${removeResult ? removeResult.amount : 0}, Status change: ${removeResult ? removeResult.statusChange : 'none'}`)
+  const removeResult = newResident.removeConsumables(1)
   if (removeResult) {
     const newActivityLogEntry = {
       tick,

@@ -35,6 +35,10 @@ export const resolveSingleTrade = (
   tick: number,
   addActivityLogEntry: (entry: ActivityLogEntry) => void
 ): Resident[] | null => {
+  if (Math.floor(tick * 10) % residents.length * 2 !== 0) {
+    console.log(`Trade resolution skipped for tick ${tick} - only allow trades on certain ticks`)
+    return null // Only allow trades on certain ticks (e.g., weekly) HACK. REmove
+  }
   if (!Array.isArray(residents) || !buyer || !marketOffer) {
     console.warn('Invalid input for trade resolution')
     return null
