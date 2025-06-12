@@ -1,5 +1,6 @@
 import { Resident } from '../../models/Resident'
-import type { BehaviouralTrait, Trade } from '../../types/types'
+import type { BehaviouralTrait, Trade, ActivityLogEntry } from '../../types/types'
+import { useSimulationStore } from "../../store/simulationStore"
 import { randomGaussian } from '../../utility/math'
 
 const names = [
@@ -38,44 +39,16 @@ const pickTrait = (): BehaviouralTrait => {
 }
 
 export const createResidents = (): Array<Resident> => {
-  const residents = names.slice(0, 10).map((name) => {
+  const residents = names.slice(0, 3).map((name) => {
     const landQuality = randomGaussian(1, 0.5)
     const behaviouralTrait = pickTrait()
-    return new Resident(name, behaviouralTrait, 'thriving', 10, 10, 10, landQuality, 'idle')
+    return new Resident(name, behaviouralTrait, 'thriving', 10, 10, 5, landQuality, 'idle', [])
   })
   return residents
 }
 
-export const processResidentsLifeCycle = (residents: Resident[], totalTicks: number): Resident[] => {
-  return residents.map((resident) => {
-    const newResident = new Resident(
-      resident.name,
-      resident.behaviouralTrait,
-      resident.status,
-      resident.tokens,
-      resident.sustenance,
-      resident.consumable,
-      resident.landQuality,
-      resident.activity
-    )
-
-    if (resident.status === 'deceased') return newResident
-
-    // Daily actions
-    newResident.produceSustenance()
-    newResident.removeConsumable(1)
-
-    // Weekly decisions
-    if (totalTicks % 7 === 0) {
-      newResident.decideNextAction()
-    }
-
-    return newResident
-  })
-}
-
-export const processResidentDailyActivities = (
-  resident: Resident,
+export const processResidentDailyLifecycle = (
+  resident: Resident, tick: number, addActivityLogEntry: (entry: ActivityLogEntry) => void
 ): Resident => {
   if (!resident) return resident
 
@@ -85,15 +58,54 @@ export const processResidentDailyActivities = (
     resident.status,
     resident.tokens,
     resident.sustenance,
-    resident.consumable,
+    resident.consumables,
     resident.landQuality,
-    resident.activity
+    resident.activity,
+    resident.exchangeLog,
+    resident.id
   )
 
+  // TOTHINK: Should the deceased residents 'action' be logged or not?
   if (resident.status !== 'deceased') {
-    newResident.produceSustenance()
-    newResident.removeConsumable(1)
+
+    newResident.decideNextAction()
+
+    const production = newResident.produce()
+    if (production) {
+      const newActivityLogEntry = {
+        tick,
+        residentId: newResident.id,
+        sourceId: newResident.id,
+        sourceType: "resident",
+        action: production.action,
+        changes: {
+          tokens: production.action === 'mine' ? production.amount : 0,
+          consumables: 0,
+          sustenance: production.action === 'produce' ? production.amount : 0
+        }
+      } as ActivityLogEntry
+      addActivityLogEntry(newActivityLogEntry)
+    }
+  }
+  const removeResult = newResident.removeConsumables(3)
+  console.log(`Resident ${newResident.name} at tick ${tick}: Removed consumables: ${removeResult ? removeResult.amount : 0}, Status change: ${removeResult ? removeResult.statusChange : 'none'}`)
+  if (removeResult) {
+    const newActivityLogEntry = {
+      tick,
+      residentId: newResident.id,
+      sourceId: newResident.id,
+      sourceType: "resident",
+      action: 'consume',
+      metadata: { residentStatusChange: removeResult.statusChange },
+      changes: {
+        tokens: 0,
+        consumables: removeResult.amount,
+        sustenance: 0
+      }
+    } as ActivityLogEntry
+    addActivityLogEntry(newActivityLogEntry)
   }
 
   return newResident
 }
+

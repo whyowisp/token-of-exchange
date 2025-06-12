@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Grid, Stack } from '@mui/material'
 import { useSimulationStore } from '../../store/simulationStore'
 import { useResidentFeedStore } from '../../store/residentFeedStore'
-import { processResidentDailyActivities } from './residentFunctions'
+import { processResidentDailyLifecycle } from './residentFunctions'
 import { resolveSingleTrade } from './tradeFunctions'
 
 import Settings from './Settings'
@@ -13,6 +13,7 @@ import ToolBar from './ToolBar'
 import type { FeedEntry, Trade } from '../../types/types'
 import { findMarketOffer } from './tradeFunctions'
 import type { Resident } from '../../models/Resident'
+import { set } from 'lodash'
 
 const SimulationMain = () => {
   const isRunning = useSimulationStore((state) => state.isRunning)
@@ -21,17 +22,17 @@ const SimulationMain = () => {
   const totalTicks = useSimulationStore((state) => state.totalTicks)
   const setResidents = useSimulationStore((state) => state.setResidents)
   const addTick = useSimulationStore((state) => state.addTick)
-  const addTrade = useSimulationStore((state) => state.addTrade)
+  const activityLogEntries = useSimulationStore((state) => state.activityLogEntries)
+  const addActivityLogEntry = useSimulationStore((state) => state.addActivityLogEntry)
 
-  const addEntry = useResidentFeedStore((state) => state.addEntry)
+  const createFeedEntry = (resolved: { residents: Resident[]; tradeData: Trade }): FeedEntry | null => {
+    const { residents, tradeData } = resolved
+    const { buyerId, sellerId, tokenAmount, productAmount } = tradeData
 
-  const createFeedEntry = (resolved: { residents: Resident[]; trade: Trade }): FeedEntry | null => {
-    const { buyerId, sellerId, tokenAmount, productAmount } = resolved.trade
+    const buyer = resolved.residents.find((r) => r._id === buyerId)
+    const sellerName = residents.find((r) => r._id === sellerId)?.name
 
-    const buyer = residents.find((r) => r.id === buyerId)
-    const sellerName = residents.find((r) => r.id === sellerId)?.name
-
-    const message = `${buyer.name} bought 
+    const message = `${buyer?.name} bought 
       ${productAmount}🌾 from 
       ${sellerName} with 
       ${tokenAmount}🥮`
@@ -47,6 +48,11 @@ const SimulationMain = () => {
     if (!isRunning) return
     const interval = setInterval(() => {
       try {
+        /*console.clear()
+        console.log(`RESIDENTS AT TICK: ${totalTicks}`)
+        residents.forEach((resident) => {
+          console.log(resident)
+        })*/
         addTick()
         const idx = totalTicks % residents.length
         const updatedResidents = [...residents]
@@ -54,28 +60,29 @@ const SimulationMain = () => {
         /* Daily Activities */
         // Producing, consuming. Making life changes, getting job, starting company
         const resident = updatedResidents[idx]
-        const dailyResident = processResidentDailyActivities(resident)
+        const dailyResident = processResidentDailyLifecycle(resident, totalTicks, addActivityLogEntry)
         updatedResidents[idx] = dailyResident
 
         // Check the markets
-        const marketOffer = findMarketOffer(dailyResident, updatedResidents)
-
-        if (marketOffer) {
-          const communityTraded = resolveSingleTrade(updatedResidents, dailyResident, marketOffer, totalTicks)
-          if (communityTraded) {
-            setResidents(communityTraded.residents)
-            addTrade(communityTraded.tradeData)
-
-            const feedEntry = createFeedEntry(communityTraded)
-            if (feedEntry) addEntry(feedEntry)
-          } else {
-            // If no trade happened, still update with daily activities
-            setResidents(updatedResidents)
-          }
-        } else {
-          // If no market offer found, still update with daily activities
+        const marketOffer = findMarketOffer(dailyResident, updatedResidents, totalTicks)
+        console.log(`Market offer for ${dailyResident.name}:`, marketOffer)
+        if (!marketOffer) {
           setResidents(updatedResidents)
+        } else {
+          const communityTraded = resolveSingleTrade(
+            updatedResidents,
+            dailyResident,
+            marketOffer,
+            totalTicks,
+            addActivityLogEntry
+          )
+          setResidents(communityTraded ? residents : updatedResidents)
         }
+        setResidents(updatedResidents)
+        /*console.log(`RESIDENTS AT TICK: ${totalTicks}`)
+        updatedResidents.forEach((resident) => {
+          console.log(resident)
+        })*/
 
         /* Weekly Activities */
         // TODO Refactor processSingleResidentLifecycle to separate daily and weekly actions
@@ -89,7 +96,7 @@ const SimulationMain = () => {
     }, tickRate)
 
     return () => clearInterval(interval)
-  }, [isRunning, tickRate, residents, totalTicks, setResidents, addTick])
+  }, [isRunning, tickRate, residents, totalTicks, setResidents, addTick, activityLogEntries, addActivityLogEntry])
 
   return (
     <>

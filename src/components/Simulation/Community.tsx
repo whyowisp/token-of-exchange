@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { Chip, Container, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 
 import EmojiEmotionsSharpIcon from '@mui/icons-material/EmojiEmotionsSharp'
@@ -32,8 +33,128 @@ const RenderResidentChip = ({ resident }: { resident: Resident }) => {
   )
 }
 
+const CircleOfLight = ({ tokens, changed }: { tokens: number; changed: 'increased' | 'decreased' | 'neutral' }) => {
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 30,
+        height: 30,
+        borderRadius: '50%',
+        background:
+          changed === 'increased'
+            ? 'rgba(0, 255, 0, 0.2)'
+            : changed === 'decreased'
+            ? 'rgba(255, 0, 0, 0.2)'
+            : 'rgba(128, 128, 128, 0.2)',
+        color: 'white',
+        fontSize: 13,
+        transition: 'background-color 0.3s ease',
+      }}
+    >
+      {tokens}
+    </span>
+  )
+}
+
+type FlashType = 'increasing' | 'neutral' | 'decreasing'
+
+interface FlashFields {
+  consumables: FlashType
+  tokens: FlashType
+  sustenance: FlashType
+}
+
 const Community = () => {
   const residents = useSimulationStore((state) => state.residents)
+  const activityLogEntries = useSimulationStore((state) => state.activityLogEntries)
+  const prevValues = useRef<{
+    [key: string]: { tokens: number; consumables: number; sustenance: number }
+  }>({})
+  const [flashFieldsMap, setFlashFieldsMap] = useState<{ [key: number]: FlashFields }>({})
+
+  useEffect(() => {
+    const newFlashFields: { [key: number]: FlashFields } = {}
+    const newPrevValues: {
+      [key: string]: { tokens: number; consumables: number; sustenance: number }
+    } = {}
+    /*activityLogEntries.forEach((entry) => {
+      console.log(
+        `Resident ${residents.find((r) => r.id === entry.sourceId)?.name} at tick ${entry.tick}: Action: ${
+          entry.action
+        } changes:`,
+        entry.changes
+      )
+    })*/
+    residents.forEach((resident) => {
+      const prevResident = prevValues.current[resident.id]
+
+      if (!prevResident) {
+        // Initialize new residents with neutral state
+        newFlashFields[resident.id] = {
+          consumables: 'neutral',
+          tokens: 'neutral',
+          sustenance: 'neutral',
+        }
+
+        // Set the previous values to current, to avoid false change detection
+        newPrevValues[resident.id] = {
+          tokens: resident.tokens,
+          consumables: resident.consumables,
+          sustenance: resident.sustenance,
+        }
+      } else {
+        // Compare with previous values
+        newFlashFields[resident.id] = {
+          consumables: getChangeState(resident.consumables, prevResident.consumables),
+          tokens: getChangeState(resident.tokens, prevResident.tokens),
+          sustenance: getChangeState(resident.sustenance, prevResident.sustenance),
+        }
+
+        // Store current values for next comparison
+        newPrevValues[resident.id] = {
+          tokens: resident.tokens,
+          consumables: resident.consumables,
+          sustenance: resident.sustenance,
+        }
+      }
+
+      /*console.log(`Resident ${resident.id} comparison:`, {
+        current: {
+          tokens: resident.tokens,
+          consumable: resident.consumables,
+          sustenance: resident.sustenance,
+        },
+        previous: prevResident,
+      })*/
+    })
+
+    // Update previous values after all comparisons are done
+    prevValues.current = newPrevValues
+
+    // Update flash fields
+    setFlashFieldsMap(newFlashFields)
+
+    const timer = setTimeout(() => {
+      setFlashFieldsMap({})
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [residents])
+
+  const getChangeState = (current: number, previous: number): FlashType => {
+    if (current > previous) return 'increasing'
+    if (current < previous) return 'decreasing'
+    return 'neutral'
+  }
+
+  // Helper to determine cell style
+  const getCellStyle = (residentId: number, field: 'tokens' | 'consumables' | 'sustenance') => ({
+    color: flashFieldsMap[residentId]?.[field] ? 'green' : 'inherit',
+    transition: 'color 0.3s ease',
+  })
 
   return (
     <Paper sx={{ mb: 2 }} elevation={2}>
@@ -58,10 +179,16 @@ const Community = () => {
                 <TableCell align="left">
                   <RenderResidentChip resident={resident} />
                 </TableCell>
-                <TableCell align="center">{resident.consumable}</TableCell>
-                <TableCell align="center">{resident.tokens}</TableCell>
+                <TableCell align="center" sx={getCellStyle(resident.id, 'consumables')}>
+                  {resident.consumables}
+                </TableCell>
+                <TableCell align="center" sx={getCellStyle(resident.id, 'tokens')}>
+                  {resident.tokens}
+                </TableCell>
                 <TableCell align="center">{resident.activity}</TableCell>
-                <TableCell align="center">{resident.sustenance}</TableCell>
+                <TableCell align="center" sx={getCellStyle(resident.id, 'sustenance')}>
+                  {resident.sustenance}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

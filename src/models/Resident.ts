@@ -1,5 +1,5 @@
-import { update } from 'lodash'
-import type { ResidentStatus, BehaviouralTrait, ResidentOccupation, Activity, MarketOffer, Trade } from '../types/types'
+import { remove } from 'lodash'
+import type { ResidentStatus, BehaviouralTrait, ResidentOccupation, Activity, MarketOffer, Trade, ExchangeLog, ActivityLogEntry } from '../types/types'
 
 export class Resident {
   private static nextId = 1
@@ -9,11 +9,12 @@ export class Resident {
   readonly _behaviouralTrait: BehaviouralTrait
   private _status: ResidentStatus
   private _occupation: ResidentOccupation
+  private _consumables: number
   private _tokens: number
   private _sustenance: number
-  private _consumable: number
   private _landQuality: number
   private _activity: Activity
+  private _exchangeLog: ExchangeLog[]
 
   constructor(
     name: string,
@@ -21,20 +22,24 @@ export class Resident {
     status: ResidentStatus,
     tokens: number,
     sustenance: number,
-    consumable: number,
+    consumables: number,
     landQuality: number,
-    activity: Activity
+    activity: Activity,
+    exchangeLog: ExchangeLog[],
+    id?: number
   ) {
-    this._id = Resident.nextId++
+
     this._name = name
     this._behaviouralTrait = behaviouralTrait
     this._status = status
     this._occupation = 'owner'
+    this._consumables = consumables ?? 0
     this._tokens = tokens ?? 0
     this._sustenance = sustenance ?? 0
-    this._consumable = consumable ?? 0
     this._landQuality = landQuality
     this._activity = activity
+    this._exchangeLog = exchangeLog
+    this._id = id ?? Resident.nextId++
   }
 
   get id(): number {
@@ -58,14 +63,18 @@ export class Resident {
   get sustenance(): number {
     return this._sustenance
   }
-  get consumable(): number {
-    return this._consumable
+  get consumables(): number {
+    return this._consumables
   }
   get landQuality(): number {
     return this._landQuality
   }
   get activity(): Activity {
     return this._activity
+  }
+
+  get exchangeLog(): ExchangeLog[] {
+    return this._exchangeLog
   }
 
   setStatus(status: ResidentStatus) {
@@ -84,24 +93,36 @@ export class Resident {
     this._tokens = Math.max(0, this._tokens - amount)
   }
 
+  addSustenance(amount: number) {
+    this._sustenance += amount
+  }
+
   removeSustenance(amount: number) {
     this._sustenance = Math.max(0, this._sustenance - amount)
   }
 
-  addConsumable(amount: number) {
-    this._consumable += amount
-    if (this._consumable >= 7) this.setStatus('thriving')
+  addConsumables(amount: number) {
+    this._consumables += amount
+    if (this._consumables >= 7) this.setStatus('thriving')
   }
 
-  removeConsumable(amount: number) {
-    this._consumable = Math.max(0, this._consumable - amount)
-    if (this._consumable === 0) this.setStatus('deceased')
-    else if (this._consumable <= 7) this.setStatus('deprived')
+  removeConsumables(amount: number): { statusChange: ResidentStatus, amount: number } | null {
+    const amountToRemove = Math.max(0, Math.min(amount, this.consumables))
+    this._consumables -= amountToRemove
+
+    if (this.consumables === 0) this.setStatus('deceased')
+    else if (this.consumables <= 7) this.setStatus('deprived')
+
+    return { statusChange: this.status, amount: -amountToRemove }
   }
 
-  tryBuyConsumables(marketOffer: MarketOffer, trade: Trade): Trade | null {
+  // Please note sustenance is turning to consumables exactly when trade happens.
+  evaluatePurchaseOffer(marketOffer: MarketOffer): { totalCost: number, tradeAmount: number } | null {
     const WEEKLY_NEED = 7
-    const remainingNeed = Math.max(0, WEEKLY_NEED - this.consumable)
+    const remainingNeed = Math.max(0, WEEKLY_NEED - this.consumables)
+
+    console.log(`[Trade] Buyer ${this.name} evaluating offer from seller ${marketOffer.sellerId} for ${marketOffer.available} units at price ${marketOffer.price}`)
+    console.log(`[Trade] Buyer ${this.name} needs ${remainingNeed} more consumables, has ${this.consumables} already`)
 
     if (!marketOffer || marketOffer.price <= 0) {
       console.warn(`[Trade] Invalid market offer`, marketOffer)
@@ -111,8 +132,8 @@ export class Resident {
       console.info(`[Trade] Buyer ${this.id} is deceased`)
       return null
     }
-    if (this.consumable >= WEEKLY_NEED) {
-      console.info(`[Trade] Buyer ${this.id} already has enough`)
+    if (this.consumables >= WEEKLY_NEED) {
+      console.info(`[Trade] Buyer ${this.name} already has enough`)
       return null
     }
 
@@ -120,23 +141,21 @@ export class Resident {
     const maxAffordable = Math.floor(this.tokens / marketOffer.price)
     const ableToBuy = Math.min(maxAffordable, remainingNeed)
     const tradeAmount = Math.min(marketOffer.available, ableToBuy)
+    console.log(`Trade amount calculated: ${tradeAmount} units for buyer ${this.name}`)
 
     // Validate final trade amount
     if (tradeAmount <= 0) return null
+    if (tradeAmount > marketOffer.available) {
+      console.warn(`[Trade] Not enough available sustenance from seller ${marketOffer.sellerId}`)
+      return null
+    }
 
     const totalCost = tradeAmount * marketOffer.price
 
     // Validate buyer has enough tokens
     if (totalCost > this.tokens) return null
 
-    this.removeTokens(totalCost)
-    this.addConsumable(tradeAmount)
-
-    return {
-      ...trade,
-      tokenAmount: totalCost,
-      productAmount: tradeAmount
-    }
+    return { totalCost, tradeAmount }
   }
 
   pickSeller(sellers: Resident[], targetAmount: number): number {
@@ -198,15 +217,23 @@ export class Resident {
     else return (pBase *= 1)
   }
 
-  produceSustenance() {
-    if (this._activity === 'producing') {
-      const baseProduction = 2.5
-      const landMultiplier = this._landQuality || 1
-      this._sustenance += Math.round(baseProduction * landMultiplier) // add to existing consumable
-    } else if (this._activity === 'mining') {
-      const baseMining = 1.9
-      const miningLuck = Math.random() * 2
-      this._tokens += Math.round(baseMining * miningLuck) // add to existing tokens
+  produce(): { action: 'produce' | 'mine'; amount: number } | null {
+    switch (this._activity) {
+      case 'producing': {
+        const baseProduction = 5
+        const landMultiplier = this._landQuality || 1
+        const amount = Math.round(baseProduction * landMultiplier)
+        this.addSustenance(amount)
+        return { action: 'produce', amount }
+      }
+      case 'mining': {
+        const baseMining = 0.5
+        const miningLuck = Math.random() * 1
+        const amount = Math.round(baseMining * miningLuck)
+        this.addTokens(amount)
+        return { action: 'mine', amount }
+      }
+      default: { return null }
     }
   }
 
@@ -217,11 +244,12 @@ export class Resident {
       behaviouralTrait: this.behaviouralTrait,
       status: this._status,
       occupation: this._occupation,
+      consumables: this._consumables,
       tokens: this._tokens,
       sustenance: this._sustenance,
-      consumable: this._consumable,
       landQuality: this._landQuality,
       activity: this._activity,
+      exchangeLog: this._exchangeLog
     }
   }
 }

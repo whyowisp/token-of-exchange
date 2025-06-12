@@ -31,14 +31,16 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
   residents: createResidents(), // Residents single source of truth
   setResidents: (residents: Resident[]) => set({ residents }),
 
-  trades: [],
-  addTrade: (trade) => set((state) => ({ trades: [...state.trades, trade] })),
+  activityLogEntries: [],
+  addActivityLogEntry: (entry) => set((state) => ({
+    activityLogEntries: [...state.activityLogEntries, entry],
+  })),
 
   reset: () => {
     set({ isRunning: false })
     set({ totalTicks: 0 })
     set({ residents: createResidents() })
-    set({ trades: [] })
+    set({ activityLogEntries: [] })
   },
 
   totalTicks: 0,

@@ -57,12 +57,18 @@ export interface PageProps {
 
 /* Simulation Logic Types */
 
+export type SellerType = 'resident' | 'company' | 'bank'
 export interface MarketOffer {
   sellerId: number
   sellerIndex: number
+  sellerType: SellerType
+  product: string
   available: number
   price: number
+  createdTick: number
 }
+
+// DEPRECATE this
 export interface Trade {
   timestamp?: number
   buyerId: number
@@ -72,6 +78,32 @@ export interface Trade {
   price: number
   tokenAmount: number
   productAmount: number
+}
+
+// USE this
+export interface ActivityLogEntry {
+  tick: number
+  sourceId: number
+  sourceType?: 'resident' | 'company' | 'bank' | 'government' | 'market' | 'other'
+  action:
+  | 'produce'
+  | 'consume'
+  | 'buy'
+  | 'sell'
+  | 'transfer'
+  | 'death'
+  | 'startCompany'
+  | 'payTax'
+  | 'receiveWage'
+  targetId?: number
+  targetType?: 'resident' | 'company' | 'bank' | 'government' | 'market' | 'other'
+  metadata?: Record<string, any>
+  changes: {
+    tokens?: number
+    consumables?: number
+    sustenance?: number
+    [key: string]: number | undefined
+  }
 }
 
 /* Simulation Settings Types */
@@ -97,9 +129,8 @@ export type SimulationStore = {
   residents: Resident[] // With a risk of duplicates. The map function is used from Array very often.
   setResidents: (residents: Resident[]) => void
 
-  trades: Trade[]
-  addTrade: (trade: Trade) => void
-  //findTrade?
+  activityLogEntries: ActivityLogEntry[]
+  addActivityLogEntry: (entry: ActivityLogEntry) => void
 
   reset: () => void
 
@@ -134,6 +165,11 @@ export type BehaviouralTrait = 'inventor' | 'risk-taker' | 'sustainer'
 export type ResidentStatus = 'thriving' | 'deprived' | 'deceased'
 export type ResidentOccupation = 'owner' | 'employee' | 'unemployed'
 export type Activity = 'producing' | 'mining' | 'idle'
+export interface ExchangeLog {
+  consumables: number,
+  tokens: number,
+  sustenance: number
+}
 
 export interface ResidentData {
   id: number
@@ -143,9 +179,10 @@ export interface ResidentData {
   occupation: ResidentOccupation
   tokens: number
   sustenance: number
-  consumable: number
+  consumables: number
   landQuality: number
   activity: Activity
+  exchangeLog: ExchangeLog[]
 }
 
 /* World factors */

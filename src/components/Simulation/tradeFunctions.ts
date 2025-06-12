@@ -1,16 +1,20 @@
-import type { MarketOffer, Trade } from "../../types/types"
+import type { MarketOffer, SellerType, ActivityLogEntry } from "../../types/types"
 import { Resident } from "../../models/Resident"
 
 export function findMarketOffer(
   buyer: Resident,
-  sellers: Resident[]
+  sellers: Resident[],
+  tick: number
 ): MarketOffer | null {
   const offers: MarketOffer[] = sellers
     .map((seller, index) => ({
       sellerId: seller.id,
       sellerIndex: index,
+      sellerType: 'resident' as SellerType,
+      product: 'sustenance',
       available: seller.sustenance,
-      price: 1 // later: dynamic pricing logic
+      price: 1, // later: dynamic pricing logic
+      createdTick: tick
     }))
     .filter(offer =>
       offer.sellerId !== buyer.id &&
@@ -24,64 +28,94 @@ export function findMarketOffer(
   return selected
 }
 
-export const resolveSingleTrade =
-  (residents: Resident[], resident: Resident, marketOffer: MarketOffer, tick: number): { residents: Resident[], tradeData: Trade } | null => {
-    if (!residents || !resident || !marketOffer) {
-      console.warn('Missing data for trade'); return null
-    }
-    const buyer = resident
-    let tradeData: Trade = {
-      timestamp: tick,
-      buyerId: resident.id,
-      sellerId: marketOffer.sellerId,
-      sellerType: 'resident',
-      product: 'sustenance',
-      price: marketOffer.price,
-      tokenAmount: 0,
-      productAmount: 0
-    }
-    // No trade possible, return unchanged
-    if (buyer.status === 'deceased' || marketOffer.available <= 1) {
-      console.warn('Trade skipped - buyer dead or market empty')
-      return { residents, tradeData }
-    }
-
-    /* Start trades */
-
-    const newResidents = [...residents] // Don't mutate original
-
-    // Attempt trade
-    const newTradeData = buyer.tryBuyConsumables(marketOffer, tradeData)
-    if (!newTradeData) {
-      console.warn('Trade failed: tryBuyConsumables returned null')
-      return null
-    }
-
-
-    // Find and validate seller
-    const seller = newResidents.find(r => r.id === marketOffer.sellerId)
-    if (!seller) return null
-
-    // Complete trade
-    seller.removeSustenance(newTradeData.productAmount)
-
-    return {
-      residents: newResidents,
-      tradeData: newTradeData
-    }
+export const resolveSingleTrade = (
+  residents: Resident[],
+  buyer: Resident,
+  marketOffer: MarketOffer,
+  tick: number,
+  addActivityLogEntry: (entry: ActivityLogEntry) => void
+): Resident[] | null => {
+  if (!Array.isArray(residents) || !buyer || !marketOffer) {
+    console.warn('Invalid input for trade resolution')
+    return null
   }
 
-/* 
-//Refactor this to handle whole residents at once
-export function resolveTrades(residents: Resident[]): Resident[] {
-  return residents.map((buyer) => {
-    if (buyer.status === 'deceased' || buyer.consumable >= 7) return buyer
+  if (buyer.status === 'deceased' || marketOffer.available <= 1) {
+    console.warn('Trade skipped - buyer dead or market empty')
+    return null
+  }
 
-    const result = buyer.tryBuyConsumables(7, residents)
-    if (result) {
-      const seller = residents[result.sellerIndex]
-      seller.removeSustenance(result.consumableAmount)
+  const seller = residents.find(r => r.id === marketOffer.sellerId)
+  if (!seller) {
+    console.warn('Seller not found')
+    return null
+  }
+
+  const totalCost = marketOffer.price
+  const amountToBuy = 1 // For now assume 1 unit per trade
+
+  if (buyer.tokens < totalCost || seller.sustenance < amountToBuy) {
+    console.warn('Trade failed - insufficient funds or product')
+    return null
+  }
+
+  // Clone residents array
+  const newResidents = [...residents]
+  const buyerClone = newResidents.find(r => r.id === buyer.id)!
+  const sellerClone = newResidents.find(r => r.id === seller.id)!
+
+  // Validate buyer's ability to buy sustenance
+  const tradeResult = buyerClone.evaluatePurchaseOffer(marketOffer)
+  if (!tradeResult) {
+    console.warn('Trade failed - buyer unable to buy sustenance')
+    return null
+  }
+
+  // Perform the trade
+  buyerClone.removeTokens(tradeResult.totalCost)
+  buyerClone.addConsumables(tradeResult.tradeAmount)
+
+  sellerClone.addTokens(tradeResult.totalCost)
+  sellerClone.removeSustenance(tradeResult.tradeAmount)
+
+  // Create activity logs
+  const buyerLog: ActivityLogEntry = {
+    tick,
+    sourceId: buyerClone.id,
+    sourceType: 'resident',
+    action: 'buy',
+    targetId: sellerClone.id,
+    targetType: 'resident',
+    metadata: {
+      product: 'sustenance',
+      price: marketOffer.price
+    },
+    changes: {
+      tokens: -tradeResult.totalCost,
+      consumables: tradeResult.tradeAmount,
+      sustenance: 0
     }
-    return buyer
-  })
-}*/
+  }
+  addActivityLogEntry(buyerLog)
+
+  const sellerLog: ActivityLogEntry = {
+    tick,
+    sourceId: sellerClone.id,
+    sourceType: 'resident',
+    action: 'sell',
+    targetId: buyerClone.id,
+    targetType: 'resident',
+    metadata: {
+      product: 'sustenance',
+      price: marketOffer.price
+    },
+    changes: {
+      tokens: tradeResult.totalCost,
+      consumables: 0,
+      sustenance: -tradeResult.tradeAmount,
+    }
+  }
+  addActivityLogEntry(sellerLog)
+
+  return newResidents
+}
