@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import '../../styles.css'
+import { useEffect, useState } from 'react'
 import { Chip, Container, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 
 import EmojiEmotionsSharpIcon from '@mui/icons-material/EmojiEmotionsSharp'
@@ -7,7 +8,6 @@ import SentimentNeutralSharpIcon from '@mui/icons-material/SentimentNeutralSharp
 import type { Resident } from '../../models/Resident'
 import type { ResidentStatus } from '../../types/types'
 import { useSimulationStore } from '../../store/simulationStore'
-import { last, set, type forEach } from 'lodash'
 
 const headers = ['Resident', '🍕', '🥮', 'Actions', '🌾']
 
@@ -54,15 +54,17 @@ const FlashingTableCell = ({
   align: 'left' | 'center' | 'right' | 'justify' | 'inherit' | undefined
 }) => {
   const tickRate = useSimulationStore((state) => state.tickRate)
-  const [activeColor, setActiveColor] = useState<string | null>(null)
   const POSITIVE_COLOR = 'rgba(76, 175, 80, 0.5)' // Emerald
   const NEGATIVE_COLOR = 'rgba(244, 67, 54, 0.5)' // Classic red
   const PRODUCE_COLOR = 'rgba(255, 193, 7, 0.5)' // Warm amber
+  const [activeColor, setActiveColor] = useState<string | null>(null)
+  const [changeAmount, setChangeAmount] = useState<number>(0)
 
   useEffect(() => {
     if (!changes || changes.length === 0) {
       // If no changes, reset immediately
       setActiveColor(null)
+      setChangeAmount(0)
       return
     }
 
@@ -72,6 +74,7 @@ const FlashingTableCell = ({
       for (const [_, value] of Object.entries(change)) {
         if (typeof value === 'number' && value !== 0) {
           flashes.push(value > 0 ? POSITIVE_COLOR : NEGATIVE_COLOR)
+          setChangeAmount(value)
         }
       }
     }
@@ -79,6 +82,7 @@ const FlashingTableCell = ({
     if (flashes.length === 0) {
       // Changes present, but all were zero → also reset
       setActiveColor(null)
+      setChangeAmount(0)
       return
     }
 
@@ -99,7 +103,7 @@ const FlashingTableCell = ({
   }, [changes])
 
   return (
-    <TableCell align={align}>
+    <TableCell align={align} sx={{ position: 'relative' }}>
       <span
         style={{
           display: 'inline-flex',
@@ -109,11 +113,19 @@ const FlashingTableCell = ({
           height: 30,
           borderRadius: '50%',
           background: activeColor || 'transparent',
-          transition: `background-color 0.2s ease`,
+          transition: `background-color 0.3s ease`,
         }}
       >
         {children}
       </span>
+      {changeAmount !== 0 && (
+        <sup
+          className={`text-xs ml-1 ${changeAmount > 0 ? 'text-green-500' : 'text-red-500'} animate-fade-up`}
+          style={{ position: 'relative', zIndex: 1 }}
+        >
+          {changeAmount > 0 ? `+${changeAmount}` : changeAmount}
+        </sup>
+      )}
     </TableCell>
   )
 }
