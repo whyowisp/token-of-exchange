@@ -1,5 +1,5 @@
-import type { MarketOffer, SellerType, ActivityLogEntry } from "../../types/types"
-import { Resident } from "../../models/Resident"
+import type { MarketOffer, SellerType, ActivityLogEntry } from "../types/types"
+import { Resident } from "../models/Resident"
 
 export function findMarketOffer(
   buyer: Resident,

@@ -12,7 +12,7 @@ import { Routes, Route } from 'react-router'
 import MainMenu from './components/MainMenu'
 import Home from './components/Home'
 import Contact from './components/Contact'
-import SimulationRoot from './components/Simulation/SimulationRoot'
+import SimulationRoot from './components/Sim/SimulationRoot'
 
 import island from './assets/island.png'
 import Guide from './components/Guide'

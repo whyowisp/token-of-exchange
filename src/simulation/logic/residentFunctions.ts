@@ -1,5 +1,5 @@
-import { Resident } from '../../models/Resident'
-import type { BehaviouralTrait, ActivityLogEntry } from '../../types/types'
+import { Resident } from '../models/Resident'
+import type { BehaviouralTrait, ActivityLogEntry } from '../types/types'
 import { randomGaussian } from '../../utility/math'
 
 const names = [
