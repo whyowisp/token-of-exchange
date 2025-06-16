@@ -5,9 +5,9 @@ import type {
   TaxType,
   TaxConfig,
 } from '../simulation/types/types'
-import { Resident } from '../simulation/models/Resident'
+import type { Resident } from '../simulation/types/types'
 import { create } from 'zustand'
-import { createResidents } from '../simulation/logic/residentFunctions'
+import { createResidents } from '../simulation/logic/residentOrchestrator'
 
 export const useSimulationStore = create<SimulationStore>((set) => ({
   bankingMode: 'gold-standard',

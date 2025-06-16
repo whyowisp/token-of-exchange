@@ -1,7 +1,3 @@
-// --- FILE 2: src/simulation/types.ts ---
-
-import type { Resident } from '../models/Resident'
-
 /* Simulation Logic Types */
 export type SellerType = 'resident' | 'company' | 'bank'
 
@@ -120,12 +116,13 @@ export interface ExchangeLog {
   sustenance: number
 }
 
-export interface ResidentData {
+// models/Resident.ts
+export interface Resident {
   id: number
   name: string
-  trait: BehaviouralTrait
+  behaviouralTrait: BehaviouralTrait
   status: ResidentStatus
-  occupation: ResidentOccupation
+  occupation: string
   tokens: number
   sustenance: number
   consumables: number
@@ -133,6 +130,7 @@ export interface ResidentData {
   activity: Activity
   exchangeLog: ExchangeLog[]
 }
+
 
 /* World factors */
 export interface EconomicIndicators {

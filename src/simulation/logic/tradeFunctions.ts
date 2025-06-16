@@ -1,5 +1,17 @@
-import type { MarketOffer, SellerType, ActivityLogEntry } from "../types/types"
-import { Resident } from "../models/Resident"
+import type {
+  MarketOffer,
+  SellerType,
+  ActivityLogEntry,
+  Resident,
+} from "../types/types"
+
+import {
+  addConsumables,
+  addTokens,
+  evaluatePurchaseOffer,
+  removeSustenance,
+  removeTokens,
+} from "./residentOrchestrator"
 
 export function findMarketOffer(
   buyer: Resident,
@@ -10,15 +22,14 @@ export function findMarketOffer(
     .map((seller, index) => ({
       sellerId: seller.id,
       sellerIndex: index,
-      sellerType: 'resident' as SellerType,
-      product: 'sustenance',
+      sellerType: "resident" as SellerType,
+      product: "sustenance",
       available: seller.sustenance,
       price: 1, // later: dynamic pricing logic
-      createdTick: tick
+      createdTick: tick,
     }))
-    .filter(offer =>
-      offer.sellerId !== buyer.id &&
-      offer.available > 0
+    .filter(
+      (offer) => offer.sellerId !== buyer.id && offer.available > 0
     )
 
   if (offers.length === 0) return null
@@ -35,91 +46,73 @@ export const resolveSingleTrade = (
   tick: number,
   addActivityLogEntry: (entry: ActivityLogEntry) => void
 ): Resident[] | null => {
-  if (Math.floor(tick * 10) % residents.length * 2 !== 0) {
-    console.log(`Trade resolution skipped for tick ${tick} - only allow trades on certain ticks`)
-    return null // Only allow trades on certain ticks (e.g., weekly) HACK. REmove
-  }
-  if (!Array.isArray(residents) || !buyer || !marketOffer) {
-    console.warn('Invalid input for trade resolution')
-    return null
-  }
-
-  if (buyer.status === 'deceased' || marketOffer.available <= 1) {
-    console.warn('Trade skipped - buyer dead or market empty')
-    return null
-  }
+  //if (Math.floor(tick * 10) % (residents.length * 2) !== 0) return null
+  //if (!Array.isArray(residents) || !buyer || !marketOffer) return null
+  if (buyer.status === "deceased" || marketOffer.available <= 1) return null
 
   const seller = residents.find(r => r.id === marketOffer.sellerId)
-  if (!seller) {
-    console.warn('Seller not found')
+  if (!seller) return null
+
+  const tradeResult = evaluatePurchaseOffer(buyer, marketOffer)
+  if (!tradeResult) return null
+
+  const newResidents = residents.map(r => ({ ...r }))
+
+  const buyerIndex = newResidents.findIndex((r) => r.id === buyer.id)
+  const sellerIndex = newResidents.findIndex((r) => r.id === marketOffer.sellerId)
+
+  if (buyerIndex === -1 || sellerIndex === -1) {
+    console.warn('Buyer or seller not found in newResidents')
     return null
   }
 
-  const totalCost = marketOffer.price
-  const amountToBuy = 1 // For now assume 1 unit per trade
+  const currentBuyer = newResidents[buyerIndex]
+  const currentSeller = newResidents[sellerIndex]
 
-  if (buyer.tokens < totalCost || seller.sustenance < amountToBuy) {
-    console.warn('Trade failed - insufficient funds or product')
-    return null
-  }
+  const updatedBuyer = addConsumables(
+    removeTokens(currentBuyer, tradeResult.totalCost),
+    tradeResult.tradeAmount
+  )
 
-  // Clone residents array
-  const newResidents = [...residents]
-  const buyerClone = newResidents.find(r => r.id === buyer.id)!
-  const sellerClone = newResidents.find(r => r.id === seller.id)!
+  const updatedSeller = removeSustenance(
+    addTokens(currentSeller, tradeResult.totalCost),
+    tradeResult.tradeAmount
+  )
 
-  // Validate buyer's ability to buy sustenance
-  const tradeResult = buyerClone.evaluatePurchaseOffer(marketOffer)
-  if (!tradeResult) {
-    console.warn('Trade failed - buyer unable to buy sustenance')
-    return null
-  }
+  newResidents[buyerIndex] = updatedBuyer
+  newResidents[sellerIndex] = updatedSeller
 
-  // Perform the trade
-  buyerClone.removeTokens(tradeResult.totalCost)
-  buyerClone.addConsumables(tradeResult.tradeAmount)
-
-  sellerClone.addTokens(tradeResult.totalCost)
-  sellerClone.removeSustenance(tradeResult.tradeAmount)
-
-  // Create activity logs
-  const buyerLog: ActivityLogEntry = {
+  addActivityLogEntry({
     tick,
-    sourceId: buyerClone.id,
-    sourceType: 'resident',
-    action: 'buy',
-    targetId: sellerClone.id,
-    targetType: 'resident',
-    metadata: {
-      product: 'sustenance',
-      price: marketOffer.price
-    },
+    sourceId: updatedBuyer.id,
+    sourceType: "resident",
+    action: "buy",
+    targetId: updatedSeller.id,
+    targetType: "resident",
+    metadata: { product: "sustenance", price: marketOffer.price },
     changes: {
       tokens: -tradeResult.totalCost,
       consumables: tradeResult.tradeAmount,
-      sustenance: 0
-    }
-  }
-  addActivityLogEntry(buyerLog)
-
-  const sellerLog: ActivityLogEntry = {
-    tick,
-    sourceId: sellerClone.id,
-    sourceType: 'resident',
-    action: 'sell',
-    targetId: buyerClone.id,
-    targetType: 'resident',
-    metadata: {
-      product: 'sustenance',
-      price: marketOffer.price
+      sustenance: 0,
     },
+  })
+
+  addActivityLogEntry({
+    tick,
+    sourceId: updatedSeller.id,
+    sourceType: "resident",
+    action: "sell",
+    targetId: updatedBuyer.id,
+    targetType: "resident",
+    metadata: { product: "sustenance", price: marketOffer.price },
     changes: {
       tokens: tradeResult.totalCost,
       consumables: 0,
       sustenance: -tradeResult.tradeAmount,
-    }
-  }
-  addActivityLogEntry(sellerLog)
+    },
+  })
 
   return newResidents
 }
+
+

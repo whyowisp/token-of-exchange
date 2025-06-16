@@ -5,8 +5,8 @@ import { Chip, Container, Paper, Table, TableBody, TableCell, TableHead, TableRo
 import EmojiEmotionsSharpIcon from '@mui/icons-material/EmojiEmotionsSharp'
 import SentimentVeryDissatisfiedSharpIcon from '@mui/icons-material/SentimentVeryDissatisfiedSharp'
 import SentimentNeutralSharpIcon from '@mui/icons-material/SentimentNeutralSharp'
-import type { Resident } from '../../models/Resident'
-import type { ResidentStatus } from '../../types/types'
+import type { Resident } from '../../simulation/types/types'
+import type { ResidentStatus } from '../../simulation/types/types'
 import { useSimulationStore } from '../../store/simulationStore'
 
 const headers = ['Resident', '🍕', '🥮', 'Actions', '🌾']
@@ -18,7 +18,7 @@ const mapStatusIcon = (status: ResidentStatus): React.ElementType | undefined =>
 }
 
 const RenderResidentChip = ({ resident }: { resident: Resident }) => {
-  const trait = resident._behaviouralTrait
+  const trait = resident.behaviouralTrait
   let traitMark = ''
   if (trait === 'inventor') traitMark = '⭐️'
   if (trait === 'risk-taker') traitMark = '🛠️'
@@ -138,13 +138,12 @@ const Community = () => {
 
   useEffect(() => {
     const lastTick = activityLogEntries[activityLogEntries.length - 1]?.tick || 0
-
-    activityLogEntries.forEach((entry) => {
+    /*activityLogEntries.forEach((entry) => {
       console.log('Processing entry:', entry)
-    })
+    })*/
 
     const latestChanges = activityLogEntries.filter((entry) => entry.tick === lastTick)
-    console.log('Latest changes at tick', lastTick, ':', latestChanges)
+    //console.log('Latest changes at tick', lastTick, ':', latestChanges)
 
     const residentsWithChanges: ResidentWithChanges[] = residents.map((resident) => {
       const changes = latestChanges
@@ -160,7 +159,7 @@ const Community = () => {
       } as ResidentWithChanges
     })
     setResidentsWithChanges(residentsWithChanges)
-    console.log('Changes by resident:', residentsWithChanges)
+    //console.log('Changes by resident:', residentsWithChanges)
   }, [activityLogEntries, tick, residents])
 
   return (
