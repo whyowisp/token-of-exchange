@@ -1,26 +1,50 @@
-import { Box, Divider, ListItem, ListItemText, Paper, Typography } from '@mui/material'
-import { FixedSizeList, FixedSizeList as List } from 'react-window'
+import { Box, ListItem, ListItemText, Paper, Typography } from '@mui/material'
+import { FixedSizeList } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { useResidentFeedStore } from '../../store/residentFeedStore'
+import { useSimulationStore } from '../../store/simulationStore'
+import type { ActivityLogEntry, Resident } from '../../simulation/types/types'
 
 interface RowProps {
   index: number
   style: React.CSSProperties
-  data: { residentFeed: { residentId: string; message: string }[] }
+  data: {
+    entries: ActivityLogEntry[]
+    residents: Resident[]
+  }
 }
 
 const renderRow = ({ index, style, data }: RowProps) => {
-  const feed = data.residentFeed[index]
-  if (!feed) return null
+  const residents = useSimulationStore.getState().residents
+  const entry = data.entries[index]
+  if (!entry) return null
+
+  const actorName = residents.find((r) => r.id === entry.sourceId)?.name ?? `#${entry.sourceId}`
+  const targetName = entry.targetId
+    ? residents.find((r) => r.id === entry.targetId)?.name ?? `#${entry.targetId}`
+    : null
+
+  const actionLabel = entry.action.toUpperCase()
+  const changeSummary = Object.entries(entry.changes || {})
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(', ')
+
+  const extraMessage = entry.message ?? ''
+
   return (
-    <ListItem dense style={style} key={feed.residentId} disablePadding>
-      <ListItemText primary={feed.message} />
+    <ListItem key={index} style={style} divider>
+      <ListItemText
+        primary={`${actionLabel} – ${actorName}${targetName ? ' → ' + targetName : ''}`}
+        secondary={`Tick: ${entry.tick}${changeSummary ? ' | ' + changeSummary : ''}${
+          extraMessage ? ' | ' + extraMessage : ''
+        }`}
+      />
     </ListItem>
   )
 }
 
 const Feed = () => {
-  const residentFeed = useResidentFeedStore((state) => state.feed)
+  const activityLogEntries = useSimulationStore((state) => state.activityLogEntries)
+  const residents = useSimulationStore((state) => state.residents)
 
   return (
     <Paper sx={{ p: 2 }} elevation={2}>
@@ -30,8 +54,8 @@ const Feed = () => {
       <Box
         sx={{
           width: '100%',
-          height: '100vh',
-          bgcolor: 'Background.default',
+          height: '80vh',
+          bgcolor: 'background.default',
         }}
       >
         <AutoSizer>
@@ -39,14 +63,11 @@ const Feed = () => {
             <FixedSizeList
               height={height}
               width={width}
-              itemSize={40}
-              itemCount={residentFeed.length}
-              overscanCount={5}
+              itemSize={96}
+              itemCount={activityLogEntries.length}
               itemData={{
-                residentFeed: residentFeed.map((feed) => ({
-                  ...feed,
-                  residentId: String(feed.residentId),
-                })),
+                entries: activityLogEntries,
+                residents,
               }}
             >
               {renderRow}

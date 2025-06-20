@@ -8,10 +8,10 @@ import type {
 import {
   addConsumables,
   addTokens,
-  evaluatePurchaseOffer,
   removeSustenance,
   removeTokens,
-} from "./residentOrchestrator"
+} from "./residentFunctions"
+
 
 export function findMarketOffer(
   buyer: Resident,
@@ -21,6 +21,7 @@ export function findMarketOffer(
   const offers: MarketOffer[] = sellers
     .map((seller, index) => ({
       sellerId: seller.id,
+      sellerName: seller.name,
       sellerIndex: index,
       sellerType: "resident" as SellerType,
       product: "sustenance",
@@ -53,8 +54,20 @@ export const resolveSingleTrade = (
   const seller = residents.find(r => r.id === marketOffer.sellerId)
   if (!seller) return null
 
-  const tradeResult = evaluatePurchaseOffer(buyer, marketOffer)
-  if (!tradeResult) return null
+  const evaluationResult = evaluatePurchaseOffer(buyer, marketOffer)
+  addActivityLogEntry({
+    tick,
+    sourceId: buyer.id,
+    sourceType: "resident",
+    action: "evaluate",
+    targetId: marketOffer.sellerId,
+    targetType: "resident",
+    metadata: { product: "sustenance", price: marketOffer.price },
+    message: evaluationResult.message,
+  })
+
+  // No trade this time
+  if (evaluationResult.totalCost < 0 || evaluationResult.tradeAmount < 0) return null
 
   const newResidents = residents.map(r => ({ ...r }))
 
@@ -70,13 +83,13 @@ export const resolveSingleTrade = (
   const currentSeller = newResidents[sellerIndex]
 
   const updatedBuyer = addConsumables(
-    removeTokens(currentBuyer, tradeResult.totalCost),
-    tradeResult.tradeAmount
+    removeTokens(currentBuyer, evaluationResult.totalCost),
+    evaluationResult.tradeAmount
   )
 
   const updatedSeller = removeSustenance(
-    addTokens(currentSeller, tradeResult.totalCost),
-    tradeResult.tradeAmount
+    addTokens(currentSeller, evaluationResult.totalCost),
+    evaluationResult.tradeAmount
   )
 
   newResidents[buyerIndex] = updatedBuyer
@@ -91,8 +104,8 @@ export const resolveSingleTrade = (
     targetType: "resident",
     metadata: { product: "sustenance", price: marketOffer.price },
     changes: {
-      tokens: -tradeResult.totalCost,
-      consumables: tradeResult.tradeAmount,
+      tokens: -evaluationResult.totalCost,
+      consumables: evaluationResult.tradeAmount,
       sustenance: 0,
     },
   })
@@ -106,13 +119,48 @@ export const resolveSingleTrade = (
     targetType: "resident",
     metadata: { product: "sustenance", price: marketOffer.price },
     changes: {
-      tokens: tradeResult.totalCost,
+      tokens: evaluationResult.totalCost,
       consumables: 0,
-      sustenance: -tradeResult.tradeAmount,
+      sustenance: -evaluationResult.tradeAmount,
     },
   })
 
   return newResidents
 }
 
+const evaluatePurchaseOffer = (
+  resident: Resident,
+  marketOffer: MarketOffer
+): { totalCost: number; tradeAmount: number, message: string } => {
+  if (marketOffer.available <= 0) {
+    return { totalCost: -1, tradeAmount: -1, message: `Market offer for sustenance is not available` }
+  }
 
+  // Calculate how much the resident can afford
+  const maxAffordable = Math.floor(resident.tokens / marketOffer.price)
+  if (maxAffordable <= 0) {
+    return {
+      totalCost: -1, tradeAmount: -1, message: `Resident ${resident.name} cannot afford any sustenance at price ${marketOffer.price}`
+    }
+  }
+
+  // Optional: calculate how much the resident "needs"
+  const missing = Math.max(0, 14 - (resident.consumables ?? 0)) // aiming for 14 units
+  const desiredAmount = Math.min(missing, maxAffordable, marketOffer.available)
+
+  if (desiredAmount <= 0) {
+    return {
+      totalCost: -1, tradeAmount: -1, message: `Resident ${resident.name} does not need any sustenance at this time`
+    }
+  }
+
+  const totalCost = desiredAmount * marketOffer.price
+
+  return {
+    totalCost,
+    tradeAmount: desiredAmount,
+    message: `Resident ${resident.name} evaluated market offer and decided to buy ${desiredAmount} 
+    units of sustenance for a total cost of ${totalCost} 
+    tokens from ${marketOffer.sellerName || 'unknown seller'}.`
+  }
+}

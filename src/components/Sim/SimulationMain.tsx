@@ -1,7 +1,5 @@
 import { useEffect } from 'react'
 import { Grid, Stack } from '@mui/material'
-import { useSimulationStore } from '../../store/simulationStore'
-
 import Settings from './Settings'
 import Metrics from './Metrics'
 import Community from './Community'

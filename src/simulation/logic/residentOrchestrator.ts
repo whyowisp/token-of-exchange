@@ -1,11 +1,9 @@
 import type {
   Resident,
   BehaviouralTrait,
-  ResidentStatus,
-  Activity,
   ActivityLogEntry,
-  MarketOffer,
 } from '../types/types'
+import { decideNextAction, produce, removeConsumables } from './residentFunctions'
 import { randomGaussian } from '../../utility/math'
 
 const names = [
@@ -23,89 +21,19 @@ const pickTrait = (): BehaviouralTrait => {
 }
 
 export const createResidents = (): Resident[] =>
-  names.slice(0, 10).map((name, i) => ({
+  names.slice(0, 3).map((name, i) => ({
     id: i + 1,
     name,
     behaviouralTrait: pickTrait(),
     status: 'thriving',
     occupation: 'owner',
     tokens: 5,
-    sustenance: 10,
-    consumables: 7,
+    sustenance: 5,
+    consumables: 5,
     landQuality: randomGaussian(1, 0.5),
-    activity: 'idle',
+    action: 'idle',
     exchangeLog: [],
   }))
-
-// Decide next action purely based on resident's data, returns new Resident
-export const decideNextAction = (resident: Resident): Resident => {
-  const internalBias = 0.4
-  const externalBias = 0.6
-
-  const internalScore = evalInternalScore(resident.behaviouralTrait)
-  const externalScore = evalExternalScore(resident.landQuality)
-
-  const combined = internalScore * internalBias + externalScore * externalBias
-  const threshold = Math.random()
-
-  const newActivity: Activity = combined > threshold ? 'mining' : 'producing'
-
-  return { ...resident, activity: newActivity }
-}
-
-const evalInternalScore = (trait: BehaviouralTrait): number => {
-  if (trait === 'inventor') return 0.45
-  if (trait === 'risk-taker') return 0.6
-  return 0.5
-}
-
-const evalExternalScore = (landQuality: number): number => {
-  return landQuality > 1 ? 0.25 : 0.5
-}
-
-// Produce tokens or sustenance based on activity, returns new Resident and produced amount
-export const produce = (
-  resident: Resident
-): { updatedResident: Resident; action: 'produce' | 'mine'; amount: number } | null => {
-  switch (resident.activity) {
-    case 'producing': {
-      const amount = Math.round(1 * (resident.landQuality || 1))
-      return {
-        updatedResident: { ...resident, sustenance: resident.sustenance + amount },
-        action: 'produce',
-        amount,
-      }
-    }
-    case 'mining': {
-      const amount = Math.round(0.5 * Math.random())
-      return {
-        updatedResident: { ...resident, tokens: resident.tokens + amount },
-        action: 'mine',
-        amount,
-      }
-    }
-    default:
-      return null
-  }
-}
-
-// Remove consumables, update status accordingly, return new Resident and changes
-export const removeConsumables = (
-  resident: Resident,
-  amount: number
-): { updatedResident: Resident; statusChange: ResidentStatus; amount: number } | null => {
-  const newAmount = Math.max(0, resident.consumables - amount)
-  let newStatus: ResidentStatus = resident.status
-
-  if (newAmount === 0) newStatus = 'deceased'
-  else if (newAmount <= 7) newStatus = 'deprived'
-
-  return {
-    updatedResident: { ...resident, consumables: newAmount, status: newStatus },
-    statusChange: newStatus,
-    amount: amount,
-  }
-}
 
 // The main lifecycle processor: takes Resident, tick, log function, returns updated Resident
 export const processResidentDailyLifecycle = (
@@ -119,7 +47,15 @@ export const processResidentDailyLifecycle = (
     return resident
   }
 
-  let updatedResident = decideNextAction(resident)
+  let { updatedResident, message } = decideNextAction(resident)
+
+  addActivityLogEntry({
+    tick,
+    sourceId: updatedResident.id,
+    sourceType: 'resident',
+    action: 'think',
+    message,
+  })
 
   const production = produce(updatedResident)
   if (production && production.updatedResident) {
@@ -129,7 +65,6 @@ export const processResidentDailyLifecycle = (
       sourceId: updatedResident.id,
       sourceType: 'resident',
       action: 'produce',
-      // Consider adding targetId/targetType if relevant
       changes: {
         tokens: production.action === 'mine' ? production.amount : 0,
         consumables: 0,
@@ -158,34 +93,3 @@ export const processResidentDailyLifecycle = (
   return updatedResident
 }
 
-
-/* Trade function helpers */
-
-export function removeTokens(resident: Resident, amount: number): Resident {
-  return { ...resident, tokens: Math.max(0, resident.tokens - amount) }
-}
-
-export function addTokens(resident: Resident, amount: number): Resident {
-  return { ...resident, tokens: resident.tokens + amount }
-}
-
-export function removeSustenance(resident: Resident, amount: number): Resident {
-  return { ...resident, sustenance: Math.max(0, resident.sustenance - amount) }
-}
-
-export function addConsumables(resident: Resident, amount: number): Resident {
-  return {
-    ...resident,
-    consumables: (resident.consumables ?? 0) + amount
-  }
-}
-
-
-export function evaluatePurchaseOffer(
-  resident: Resident,
-  marketOffer: MarketOffer
-): { totalCost: number; tradeAmount: number } | null {
-  if (resident.tokens < marketOffer.price) return null
-  if (marketOffer.available <= 0) return null
-  return { totalCost: marketOffer.price, tradeAmount: 1 }
-}

@@ -3,6 +3,7 @@ export type SellerType = 'resident' | 'company' | 'bank'
 
 export interface MarketOffer {
   sellerId: number
+  sellerName?: string
   sellerIndex: number
   sellerType: SellerType
   product: string
@@ -11,19 +12,8 @@ export interface MarketOffer {
   createdTick: number
 }
 
-// DEPRECATE this
-export interface Trade {
-  timestamp?: number
-  buyerId: number
-  sellerId: number
-  sellerType: string
-  product: string
-  price: number
-  tokenAmount: number
-  productAmount: number
-}
-
-// USE this
+// Activity log entries store the history of actions taken by residents, companies, banks, etc.
+// This is used for analytics mostly, but can be for any other purpose as well.
 export interface ActivityLogEntry {
   tick: number
   sourceId: number
@@ -38,10 +28,13 @@ export interface ActivityLogEntry {
   | 'startCompany'
   | 'payTax'
   | 'receiveWage'
+  | 'think'
+  | 'evaluate'
   targetId?: number
-  targetType?: 'resident' | 'company' | 'bank' | 'government' | 'market' | 'other'
+  targetType?: 'resident' | 'company' | 'bank' | 'government' | 'market' | 'other',
+  message?: string
   metadata?: Record<string, any>
-  changes: {
+  changes?: {
     tokens?: number
     consumables?: number
     sustenance?: number
@@ -90,7 +83,8 @@ export type SimulationStore = {
 }
 
 /* Zustand Resident Feed Store Types */
-export type FeedEntry = {
+
+export interface FeedEntry {
   tick: number
   residentId: number
   message: string
@@ -108,15 +102,8 @@ export type ResidentFeedStore = {
 export type BehaviouralTrait = 'inventor' | 'risk-taker' | 'sustainer'
 export type ResidentStatus = 'thriving' | 'deprived' | 'deceased'
 export type ResidentOccupation = 'owner' | 'employee' | 'unemployed'
-export type Activity = 'producing' | 'mining' | 'idle'
+export type Action = 'producing' | 'mining' | 'idle'
 
-export interface ExchangeLog {
-  consumables: number,
-  tokens: number,
-  sustenance: number
-}
-
-// models/Resident.ts
 export interface Resident {
   id: number
   name: string
@@ -127,10 +114,14 @@ export interface Resident {
   sustenance: number
   consumables: number
   landQuality: number
-  activity: Activity
+  action: Action
   exchangeLog: ExchangeLog[]
 }
-
+export interface ExchangeLog {
+  consumables: number,
+  tokens: number,
+  sustenance: number
+}
 
 /* World factors */
 export interface EconomicIndicators {

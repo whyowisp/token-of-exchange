@@ -138,20 +138,15 @@ const Community = () => {
 
   useEffect(() => {
     const lastTick = activityLogEntries[activityLogEntries.length - 1]?.tick || 0
-    /*activityLogEntries.forEach((entry) => {
-      console.log('Processing entry:', entry)
-    })*/
-
-    const latestChanges = activityLogEntries.filter((entry) => entry.tick === lastTick)
-    //console.log('Latest changes at tick', lastTick, ':', latestChanges)
+    const latestChanges = activityLogEntries.filter((entry) => entry.tick === lastTick && entry.changes)
 
     const residentsWithChanges: ResidentWithChanges[] = residents.map((resident) => {
       const changes = latestChanges
         .filter((entry) => entry.sourceId === resident.id)
         .map((entry) => ({
-          consumables: entry.changes.consumables || 0,
-          tokens: entry.changes.tokens || 0,
-          sustenance: entry.changes.sustenance || 0,
+          consumables: entry.changes?.consumables || 0,
+          tokens: entry.changes?.tokens || 0,
+          sustenance: entry.changes?.sustenance || 0,
         }))
       return {
         resident,
@@ -201,7 +196,7 @@ const Community = () => {
                 >
                   {rwc.resident.tokens}
                 </FlashingTableCell>
-                <TableCell>{rwc.resident.activity}</TableCell>
+                <TableCell>{rwc.resident.action}</TableCell>
                 <FlashingTableCell
                   align="center"
                   changes={rwc.changes.map((c) => ({

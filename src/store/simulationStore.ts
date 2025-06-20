@@ -33,7 +33,7 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
 
   activityLogEntries: [],
   addActivityLogEntry: (entry) => set((state) => ({
-    activityLogEntries: [...state.activityLogEntries, entry],
+    activityLogEntries: [entry, ...state.activityLogEntries],
   })),
 
   reset: () => {
