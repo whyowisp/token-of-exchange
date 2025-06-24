@@ -5,9 +5,7 @@ import type {
   TaxType,
   TaxConfig,
 } from '../simulation/types/types'
-import type { Resident } from '../simulation/types/types'
 import { create } from 'zustand'
-import { createResidents } from '../simulation/logic/residentOrchestrator'
 
 export const useSimulationStore = create<SimulationStore>((set) => ({
   bankingMode: 'gold-standard',
@@ -28,19 +26,9 @@ export const useSimulationStore = create<SimulationStore>((set) => ({
     })
   },
 
-  residents: createResidents(), // Residents single source of truth
-  setResidents: (residents: Resident[]) => set({ residents }),
-
-  activityLogEntries: [],
-  addActivityLogEntry: (entry) => set((state) => ({
-    activityLogEntries: [entry, ...state.activityLogEntries],
-  })),
-
   reset: () => {
     set({ isRunning: false })
     set({ totalTicks: 0 })
-    set({ residents: createResidents() })
-    set({ activityLogEntries: [] })
   },
 
   totalTicks: 0,

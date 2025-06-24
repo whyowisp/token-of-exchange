@@ -30,6 +30,7 @@ export interface ActivityLogEntry {
   | 'receiveWage'
   | 'think'
   | 'evaluate'
+  | 'trade'
   targetId?: number
   targetType?: 'resident' | 'company' | 'bank' | 'government' | 'market' | 'other',
   message?: string
@@ -63,12 +64,6 @@ export type SimulationStore = {
   taxSettings: Map<TaxType, TaxConfig>
   setTaxConfig: (taxType: TaxType, config: Partial<TaxConfig>) => void
 
-  residents: Resident[]
-  setResidents: (residents: Resident[]) => void
-
-  activityLogEntries: ActivityLogEntry[]
-  addActivityLogEntry: (entry: ActivityLogEntry) => void
-
   reset: () => void
 
   isRunning: boolean
@@ -80,6 +75,18 @@ export type SimulationStore = {
 
   totalTicks: number
   addTick: () => void
+}
+
+export type ResidentStore = {
+  residents: Resident[]
+  setResidents: (residents: Resident[]) => void
+  reset: () => void
+}
+
+export type LogStore = {
+  activityLogEntries: ActivityLogEntry[]
+  addActivityLogEntry: (entry: ActivityLogEntry) => void
+  reset: () => void
 }
 
 /* Zustand Resident Feed Store Types */
