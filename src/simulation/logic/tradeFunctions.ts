@@ -1,3 +1,4 @@
+import { makeStyles } from "@mui/material"
 import type {
   MarketOffer,
   SellerType,
@@ -17,7 +18,7 @@ export function findMarketOffer(
   buyer: Resident,
   sellers: Resident[],
   tick: number
-): MarketOffer | null {
+): MarketOffer {
   const offers: MarketOffer[] = sellers
     .map((seller, index) => ({
       sellerId: seller.id,
@@ -33,7 +34,7 @@ export function findMarketOffer(
       (offer) => offer.sellerId !== buyer.id && offer.available > 0
     )
 
-  if (offers.length === 0) return null
+  //if (offers.length === 0) return null
 
   // Choose randomly from available offers
   const selected = offers[Math.floor(Math.random() * offers.length)]
@@ -47,12 +48,45 @@ export const resolveSingleTrade = (
   tick: number,
   addActivityLogEntry: (entry: ActivityLogEntry) => void
 ): Resident[] | null => {
-  //if (Math.floor(tick * 10) % (residents.length * 2) !== 0) return null
-  //if (!Array.isArray(residents) || !buyer || !marketOffer) return null
-  if (buyer.status === "deceased" || marketOffer.available <= 1) return null
+  if (!Array.isArray(residents) || !buyer) {
+    console.warn('residents not existing or buyer not existing')
+    return null
+  }
+  if (buyer.status === "deceased") {
+    addActivityLogEntry({
+      tick,
+      sourceId: buyer.id,
+      sourceType: 'resident',
+      action: 'death',
+      message: `Buyer ${buyer.name} cannot make the purchase.`
+    })
+    return null
+  }
 
-  const seller = residents.find(r => r.id === marketOffer.sellerId)
-  if (!seller) return null
+  if (!marketOffer) {
+    console.info('Market offer does not exist')
+    addActivityLogEntry({
+      tick,
+      sourceId: -1,
+      sourceType: "market",
+      action: 'trade',
+      message: `Market is empty, no sellers found.`
+    })
+    return null
+  }
+
+  if (marketOffer.available < 1) {
+    console.info('Market offer amount insufficient -> no trade.')
+    addActivityLogEntry({
+      tick,
+      sourceId: marketOffer.sellerId,
+      sourceType: "market",
+      action: 'trade',
+      metadata: { product: "sustenance", price: marketOffer.price, available: marketOffer.available },
+      message: `Market offer failed. Produce available: ${marketOffer.available} for ${marketOffer.price}/each`
+    })
+    return null
+  }
 
   const evaluationResult = evaluatePurchaseOffer(buyer, marketOffer)
   addActivityLogEntry({

@@ -1,5 +1,7 @@
 import { Toolbar, Box, Button, Slider, Typography } from '@mui/material'
 import { useSimulationStore } from '../../store/simulationStore'
+import { useResidentStore } from '../../store/residentStore'
+import { useLogStore } from '../../store/logStore'
 
 const ToolBar = () => {
   const isRunning = useSimulationStore((state) => state.isRunning)
@@ -9,9 +11,19 @@ const ToolBar = () => {
 
   const start = useSimulationStore((state) => state.start)
   const stop = useSimulationStore((state) => state.stop)
-  const reset = useSimulationStore((state) => state.reset)
+  const resetSimulation = useSimulationStore((state) => state.reset)
 
-  const residents = useSimulationStore((state) => state.residents)
+  const residents = useResidentStore((state) => state.residents)
+  const resetResidents = useResidentStore((state) => state.reset)
+
+  const resetActivityLog = useLogStore((state) => state.reset)
+
+  const resetAll = () => {
+    resetSimulation()
+    resetResidents()
+    resetActivityLog()
+  }
+
   return (
     <Toolbar>
       <Box sx={{ flexGrow: 2, display: { xs: 'flex' } }}>
@@ -40,7 +52,7 @@ const ToolBar = () => {
             fontFamily: 'monospace',
             fontWeight: 700,
           }}
-          onClick={() => reset()}
+          onClick={() => resetAll()}
         >
           Reset
         </Button>

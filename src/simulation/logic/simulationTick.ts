@@ -12,23 +12,25 @@ export function processSimulationTick(
     throw new Error("Residents must be an array")
   }
   const idx = totalTicks % residents.length
-
-  // Step 1: Apply daily lifecycle to one resident
   const updatedResidents = [...residents]
-  updatedResidents[idx] = processResidentDailyLifecycle(
-    residents[idx],
-    totalTicks,
-    addActivityLogEntry
-  )
 
-  // Step 2: Find a market offer for that resident in updated residents
-  const marketOffer = findMarketOffer(updatedResidents[idx], updatedResidents, totalTicks)
-  if (!marketOffer) {
+  const isMarketDay = Math.floor(totalTicks / residents.length) % 3 === 0
+
+  if (!isMarketDay) {
+    // Step 1: Apply daily lifecycle to one resident
+    updatedResidents[idx] = processResidentDailyLifecycle(
+      residents[idx],
+      totalTicks,
+      addActivityLogEntry
+    )
     return updatedResidents
   }
 
+
+  // Step 2: Find a market offer for that resident in updated residents
+  const marketOffer = findMarketOffer(updatedResidents[idx], updatedResidents, totalTicks)
+
   // Step 3: Try to resolve a trade on the residents after lifecycle update
-  resolveSingleTrade(updatedResidents, updatedResidents[idx], marketOffer, totalTicks, addActivityLogEntry)
   const tradedResidents = resolveSingleTrade(
     updatedResidents,
     updatedResidents[idx],
@@ -36,8 +38,6 @@ export function processSimulationTick(
     totalTicks,
     addActivityLogEntry
   )
-
-  //console.log('residents after trade: ' + JSON.stringify(tradedResidents))
 
   // Step 4: If trade happened, return tradedResidents; else return updatedResidents with lifecycle update
   return tradedResidents ?? updatedResidents

@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Grid, Stack } from '@mui/material'
 import Settings from './Settings'
 import Metrics from './Metrics'
