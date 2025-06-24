@@ -159,6 +159,7 @@ interface Props {
 
 export const GreyFlashingCell: React.FC<Props> = ({ children, shouldFlash, align = 'center' }) => {
   const [flash, setFlash] = useState(false)
+  const flashColor = 'rgba(163, 163, 163, 0.32)'
 
   useEffect(() => {
     if (shouldFlash) {
@@ -173,7 +174,7 @@ export const GreyFlashingCell: React.FC<Props> = ({ children, shouldFlash, align
       align={align}
       sx={{
         minWidth: 1,
-        backgroundColor: flash ? '#e0e0e0' : 'transparent',
+        backgroundColor: flash ? flashColor : 'transparent',
         transition: 'background-color 0.3s ease-in-out',
       }}
     >

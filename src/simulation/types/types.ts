@@ -105,29 +105,57 @@ export type ResidentFeedStore = {
   clearFeed: () => void
 }
 
-/* Resident related types */
+/* Community types */
+
+export interface NaturalResource {
+  id: number
+  quality: number
+  renewRate: number
+  stressLoadMax: number
+  condition: 'pristine' | 'healthy' | 'degraded' | 'depleted'
+}
+
+interface ExchangeLog {
+  consumables: number,
+  tokens: number,
+  sustenance: number
+}
+interface CommunityEntity {
+  readonly entity: 'resident' | 'mint' | 'workshop' | 'vault'
+  readonly id: number
+  name: string
+  tokens: number         // personal or company capital
+  sustenance: number     // inventory or stock of sustenance
+  resources: NaturalResource[]
+  exchangeLog?: ExchangeLog[]
+}
+
 export type BehaviouralTrait = 'inventor' | 'risk-taker' | 'sustainer'
 export type ResidentStatus = 'thriving' | 'deprived' | 'deceased'
 export type ResidentOccupation = 'owner' | 'employee' | 'unemployed'
 export type Action = 'producing' | 'mining' | 'idle'
 
-export interface Resident {
-  id: number
-  name: string
+export interface Resident extends CommunityEntity {
+  readonly entity: 'resident'
   behaviouralTrait: BehaviouralTrait
   status: ResidentStatus
-  occupation: string
-  tokens: number
-  sustenance: number
+  occupation: ResidentOccupation
   consumables: number
   landQuality: number
   action: Action
-  exchangeLog: ExchangeLog[]
 }
-export interface ExchangeLog {
-  consumables: number,
-  tokens: number,
-  sustenance: number
+
+export interface Mint extends CommunityEntity {
+  readonly entity: 'mint'
+  reserves?: number // gold or other reserves or none
+  totalTokensIssued: number // This is the actual tokens put in circulation.
+}
+
+export interface Workshop extends CommunityEntity {
+  readonly entity: 'workshop'
+  ownerId: number   // Resident id, represents all investors at this point
+  employeeIds: number[]
+  sustenanceJennyLevel: number // How modern tech ws uses.
 }
 
 /* World factors */
