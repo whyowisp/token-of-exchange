@@ -2,7 +2,7 @@ import type { ActivityLogEntry } from '../../simulation/types/types'
 import { Box, ListItem, ListItemText, Paper, Typography } from '@mui/material'
 import { FixedSizeList } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { useResidentStore } from '../../store/residentStore'
+import { useCommunityStore } from '../../store/communityStore'
 import { useLogStore } from '../../store/logStore'
 
 interface RowProps {
@@ -14,7 +14,7 @@ interface RowProps {
 const renderRow = ({ index, style, data }: RowProps) => {
   const { grouped } = data
   const { tick, entries } = grouped[index]
-  const residents = useResidentStore.getState().residents
+  const residents = useCommunityStore.getState().residents
 
   return (
     <ListItem style={{ ...style, alignItems: 'flex-start' }} key={tick} divider>

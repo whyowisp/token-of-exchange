@@ -8,9 +8,11 @@ export function processSimulationTick(
   totalTicks: number,
   addActivityLogEntry: (entry: ActivityLogEntry) => void
 ): Resident[] {
+
   if (!Array.isArray(residents)) {
     throw new Error("Residents must be an array")
   }
+
   const idx = totalTicks % residents.length
   const updatedResidents = [...residents]
 

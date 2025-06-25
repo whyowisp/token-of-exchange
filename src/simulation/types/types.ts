@@ -77,9 +77,13 @@ export type SimulationStore = {
   addTick: () => void
 }
 
-export type ResidentStore = {
+export type CommunityStore = {
   residents: Resident[]
   setResidents: (residents: Resident[]) => void
+
+  naturalResources: NaturalResource[]
+  setNaturalResources: (resources: NaturalResource[]) => void
+
   reset: () => void
 }
 
@@ -107,12 +111,15 @@ export type ResidentFeedStore = {
 
 /* Community types */
 
+type EntityTypes = 'resident' | 'mint' | 'workshop' | 'vault'
 export interface NaturalResource {
   id: number
   quality: number
   renewRate: number
   stressLoadMax: number
   condition: 'pristine' | 'healthy' | 'degraded' | 'depleted'
+  ownerId?: number
+  ownerType?: EntityTypes
 }
 
 interface ExchangeLog {
@@ -120,13 +127,14 @@ interface ExchangeLog {
   tokens: number,
   sustenance: number
 }
+
 interface CommunityEntity {
-  readonly entity: 'resident' | 'mint' | 'workshop' | 'vault'
+  readonly entity: EntityTypes
   readonly id: number
   name: string
   tokens: number         // personal or company capital
   sustenance: number     // inventory or stock of sustenance
-  resources: NaturalResource[]
+  resourceIds: number[]
   exchangeLog?: ExchangeLog[]
 }
 
@@ -141,7 +149,6 @@ export interface Resident extends CommunityEntity {
   status: ResidentStatus
   occupation: ResidentOccupation
   consumables: number
-  landQuality: number
   action: Action
 }
 

@@ -8,7 +8,7 @@ import SentimentNeutralSharpIcon from '@mui/icons-material/SentimentNeutralSharp
 import type { Resident } from '../../simulation/types/types'
 import type { ResidentStatus } from '../../simulation/types/types'
 import { useSimulationStore } from '../../store/simulationStore'
-import { useResidentStore } from '../../store/residentStore'
+import { useCommunityStore } from '../../store/communityStore'
 import { useLogStore } from '../../store/logStore'
 
 const headers = ['Resident', '🍕', '🥮', 'Actions', '🌾']
@@ -186,7 +186,7 @@ export const GreyFlashingCell: React.FC<Props> = ({ children, shouldFlash, align
 
 const Community = () => {
   const tick = useSimulationStore((state) => state.totalTicks)
-  const residents = useResidentStore((state) => state.residents)
+  const residents = useCommunityStore((state) => state.residents)
   const activityLogEntries = useLogStore((state) => state.activityLogEntries)
   const [residentsWithChanges, setResidentsWithChanges] = useState<ResidentWithChanges[]>([])
 

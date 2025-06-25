@@ -1,6 +1,6 @@
 import { Toolbar, Box, Button, Slider, Typography } from '@mui/material'
 import { useSimulationStore } from '../../store/simulationStore'
-import { useResidentStore } from '../../store/residentStore'
+import { useCommunityStore } from '../../store/communityStore'
 import { useLogStore } from '../../store/logStore'
 
 const ToolBar = () => {
@@ -13,8 +13,8 @@ const ToolBar = () => {
   const stop = useSimulationStore((state) => state.stop)
   const resetSimulation = useSimulationStore((state) => state.reset)
 
-  const residents = useResidentStore((state) => state.residents)
-  const resetResidents = useResidentStore((state) => state.reset)
+  const residents = useCommunityStore((state) => state.residents)
+  const resetResidents = useCommunityStore((state) => state.reset)
 
   const resetActivityLog = useLogStore((state) => state.reset)
 
