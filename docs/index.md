@@ -1,8 +1,12 @@
-## Token of Exchange — an Iterative Method
+## The Iterative Method
 
 This simulation explores how an isolated village of residents might implement an economic system using a common token as a medium of exchange. Each iteration models production, trade, and token circulation, allowing observation of how wealth concentrates, how productivity and technological advances affect the economy, and how token supply influences purchasing power. The experiment abstracts complex dynamics of money, debt, and consumption to reveal fundamental mechanisms behind economic flows in a simple, iterative framework.
 
-## Base assumptions
+This page explains how to manually implement and follow the system flow and provides a template. Please check the examples (menu above) of how the template have been used and the findings I have made.
+
+**Please note that this page is *not* the requirements of the application!**
+
+## Base Assumptions
 
 A virtual isolated village with 10 residents, the Elder, and a Bank.
 
@@ -51,4 +55,71 @@ Values are tracked in simple tables, updated round by round and phase by phase.
 - **W** = Employed (worker)  
 - **X** = Deceased
 
+## Template (copy this to your text editor)
 
+### Status codes
+
+> **R** = Resident (no status)  
+> **U** = Unemployed  
+> **E** = Entrepreneur  
+> **W** = Employed (worker)  
+> **X** = Deceased
+
+## Variables
+
+> Banking type: (private/public)  
+> Monetary system: (Fiat, Gold, Private)  
+> Entrepreneurial allowance: (state, private companies etc.)  
+> Initial tax rate: 0.1  
+> Other options: ____________________________________________
+
+
+### Initial state
+
+|       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
+|-------|----|----|----|----|----|----|----|----|----|-----|
+| Output | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+---
+---
+**Copy the template below iteratively i.e. Round 1, Round 2, Round N... and fill the tables phase by phase following the rules and laws you have created**
+---
+---
+
+## Round 1
+
+#### Phase 1 — Currency creation, payments and production
+
+|       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
+|-------|----|----|----|----|----|----|----|----|----|-----|
+| Output | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+#### Phase 2 — Price evaluation & trade
+
+ > P<sub>unit</sub> = M/Q<sub>available</sub> = 100/10 = ___
+
+|       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
+|-------|----|----|----|----|----|----|----|----|----|-----|
+| Output | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+#### Phase 3 — Taxes and consumption
+
+|       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
+|-------|----|----|----|----|----|----|----|----|----|-----|
+| Output | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+#### Final phase — Opportunity evaluation and resident status changes
+
+|       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
+|-------|----|----|----|----|----|----|----|----|----|-----|
+| Output | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |

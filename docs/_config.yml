@@ -3,6 +3,7 @@ title: Token of Exchange
 description: Heterodox economic insights through the eyes of an Engineer and Software Developer
 minima:
   nav_pages:
+    - ToE-requirements.md
     - index.md
     - iterations.md
 minima: 
