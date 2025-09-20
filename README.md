@@ -1,3 +1,3 @@
 # Token of Exchange
 
--> [](https://whyowisp.github.io/token-of-exchange/)
+[GitHub pages -> whyowisp.github.io/token-of-exchange/](https://whyowisp.github.io/token-of-exchange/)
