@@ -1,4 +1,4 @@
-# 🌴 Token of Exchange – Simulation Design
+## 🌴 Token of Exchange – Simulation Design
 
 ## Preface
 
