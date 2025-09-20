@@ -1,14 +1,23 @@
-## Test 1 — Fiat currency
+## Test 1 — Productivity crash
 
 *Fiat currency. Start from nothing. No taxes. The system starts **agrarian** i.e. everyone can self sustain*
 
-## Initial state
+### Status codes
 
-|       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
-|-------|----|----|----|----|----|----|----|----|----|-----|
-| Output | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+> **R** = Resident (no status)  
+> **U** = Unemployed  
+> **E** = Entrepreneur  
+> **W** = Employed (worker)  
+> **X** = Deceased
+
+## Variables
+
+> Banking type: public  
+> Monetary system: fiat  
+> Entrepreneurial allowance: private competing firms  
+> Initial tax rate: 0.0
+>
+> Other options: Every resident produces in their max capacity. Elder asks bank to create 100 tokens and distribute them to each.
 
 ## Round 1
 

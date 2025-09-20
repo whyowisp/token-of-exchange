@@ -1,10 +1,10 @@
 ## The Iterative Method
 
-This simulation explores how an isolated village of residents might implement an economic system using a common token as a medium of exchange. Each iteration models production, trade, and token circulation, allowing observation of how wealth concentrates, how productivity and technological advances affect the economy, and how token supply influences purchasing power. The experiment abstracts complex dynamics of money, debt, and consumption to reveal fundamental mechanisms behind economic flows in a simple, iterative framework.
+This simulation explores how an isolated village of residents might implement an economic system using a common token as a medium of exchange. Each iteration models production, trade, and token circulation, allowing observation of how wealth and tokens distributes, how productivity and technological advances affect the economy, and how token supply influences purchasing power. The experiment abstracts complex dynamics of money, debt, and consumption to reveal fundamental mechanisms behind economic flows in a simple, iterative framework.
 
 This page explains how to manually implement and follow the system flow and provides a template. Please check the examples (menu above) of how the template have been used and the findings I have made.
 
-**Please note that this page is *not* the requirements of the application!**
+**Please note that this page is *not* the requirements of the application! For interested they are found [here](https://github.com/whyowisp/token-of-exchange/blob/main/docs/ToE-requirements.md).**
 
 ## Base Assumptions
 
@@ -13,7 +13,7 @@ A virtual isolated village with 10 residents, the Elder, and a Bank.
 - All exchanges must be made using the Token.
 - Each individual *must not* consume their own product
 - Only one type of product exists, covering every possible need (simplifying consumption decisions).
-- Only one type of company output this single product.
+- Only one type of companies output this single product.
 - Product prices are calculated per unit:
 
 > P<sub>unit</sub> = M1<sub>total</sub> / Q 
@@ -23,7 +23,7 @@ Q = Total number of products
 
 - Technological advancements can increase production output (not included in the alpha model).
 - Centralizing capital and labor within a company structure enhances output. *(Simulation rule, not a real-world assumption)*
-- Consumption is 1 product/resident/round
+- Base consumption is 1 product/resident/round
 
 ## Variables
 
