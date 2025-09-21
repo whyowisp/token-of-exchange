@@ -55,7 +55,7 @@ Values are tracked in simple tables, updated round by round and phase by phase.
 - **W** = Employed (worker)  
 - **X** = Deceased
 
-## Template (copy this to your text editor)
+## Template (start by copying all belove this to your text editor)
 
 ### Status codes
 
@@ -70,11 +70,15 @@ Values are tracked in simple tables, updated round by round and phase by phase.
 > Banking type: (private/public)  
 > Monetary system: (Fiat, Gold, Private)  
 > Entrepreneurial allowance: (state, private companies etc.)  
-> Initial tax rate: 0.1  
+> Initial tax factor: 0.0  
 > Other options: ____________________________________________
 
 
 ### Initial state
+
+|       | Elder | Mint |
+|-------|----|----|
+| Balance | 0 | 0 |
 
 |       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
 |-------|----|----|----|----|----|----|----|----|----|-----|
@@ -88,9 +92,9 @@ Values are tracked in simple tables, updated round by round and phase by phase.
 ---
 ---
 
-## Round 1
+## Round N
 
-#### Phase 1 — Currency creation, payments and production
+#### Phase 1 — Opportunity evaluation and resident status changes
 
 |       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
 |-------|----|----|----|----|----|----|----|----|----|-----|
@@ -98,7 +102,7 @@ Values are tracked in simple tables, updated round by round and phase by phase.
 | Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-#### Phase 2 — Price evaluation & trade
+#### Phase 2 — Currency creation, payments and production
 
  > P<sub>unit</sub> = M/Q<sub>available</sub> = 100/10 = ___
 
@@ -108,7 +112,7 @@ Values are tracked in simple tables, updated round by round and phase by phase.
 | Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-#### Phase 3 — Taxes and consumption
+#### Phase 3 — Price evaluation & trade
 
 |       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
 |-------|----|----|----|----|----|----|----|----|----|-----|
@@ -116,7 +120,7 @@ Values are tracked in simple tables, updated round by round and phase by phase.
 | Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-#### Final phase — Opportunity evaluation and resident status changes
+#### Final phase — Taxes and consumption
 
 |       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
 |-------|----|----|----|----|----|----|----|----|----|-----|

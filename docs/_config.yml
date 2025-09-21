@@ -4,7 +4,8 @@ description: Heterodox economic insights through the eyes of an Engineer and Sof
 minima:
   nav_pages:
     - index.md
-    - iterations.md
+    - test1.md
+    - test2.md
 minima: 
   skin: solarized-dark
 author:
