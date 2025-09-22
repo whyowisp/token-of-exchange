@@ -1,4 +1,4 @@
-## Test 1 — Productivity crash
+## Example 1
 
 *Fiat currency. Start from nothing. No taxes. The system starts **agrarian** i.e. everyone can self sustain*
 

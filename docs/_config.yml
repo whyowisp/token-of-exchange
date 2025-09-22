@@ -4,9 +4,8 @@ description: Heterodox economic insights through the eyes of an Engineer and Sof
 minima:
   nav_pages:
     - index.md
-    - test1.md
-    - test2.md
-minima: 
+    - example-1.md
+    - example-2.md
   skin: solarized-dark
 author:
   name: Mikko Sipola — 2025
