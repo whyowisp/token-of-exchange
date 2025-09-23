@@ -209,3 +209,139 @@ Both entrepreneurs are finally starting to earn a living from their revenue.
 |--------|----|-----|-----|----|-----|-----|----|----|----|-----|
 | Tokens | 113 | 127 | 91 | 113 | 109 | 82 | 82 | 82 | 82 | 55 |
 | Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+---
+---
+
+## Round 3
+
+#### Phase 1 — Opportunity evaluation and resident status changes
+
+*Elder decrees that some of the tax accretion is returned back to economy via social security program. He refers to the past information about living costs and shares exactly the amount needed for unemployed to survive round to round basis (10 products * 1.9 unit price = 19 tokens). He also keeps infra workers working with 30 each.* 
+
+*The people are not satified with the living standards they have. The minimum to survive is still 10 units, but how about having 15? So far it doesn't have to be any external reason — 10 is simply too low*
+
+Don't update anything at this phase!
+
+> Infrastructure factor: 1.1 
+> Science/tech factor: 1.0
+> All Gross Margins: 1.2  
+
+**Administration**
+
+|       | Elder | Mint |
+|-------|----|----|
+| Balance | 100 | -1000 |
+
+**Community**
+
+|        | E1 | W2  | U3  | E4  | W5  | U6 | W7 | W8 | W9 | U10 |
+|--------|----|-----|-----|----|-----|-----|----|----|----|-----|
+| Tokens | 113 | 127 | 91 | 113 | 109 | 82 | 82 | 82 | 82 | 55 |
+| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+**Economic Output Matrix**
+
+|      | E1 | w2 | w9 |   | E4 | w5 |   | w7 | w8 |
+|------|----|----|----|---|----|----|---|----|----|
+| Salary | -  | 40  | 30  |   | -  | 30  |   | 30  | 30  |
+| Output | 0  | 0  | 0  |   | 0  | 0  |   | infra  | infra  |
+| Quality | 1  | 1  | 1  |   | 1  | 1  |   | 1  | 1  |
+| Stocks | 16  | -  | -  |   | 14  | -  |   | -  | -  |
+
+
+#### Phase 2 — Currency creation, payments and production
+
+> Infrastructure factor: 1.1  
+> Science/tech factor: 1.0  
+> All Gross Margins: 1.2
+
+**Government**
+
+Update administration spending!
+
+|       | Elder | Mint |
+|-------|----|----|
+| Balance | 2 | -1000 |
+
+**Economic Output Matrix**
+
+|      | E1 | w2 | w9 |   | E4 | w5 |   | w7 | w8 |
+|------|----|----|----|---|----|----|---|----|----|
+| Salary | -  | 40  | 30  |   | -  | 30  |   | 30  | 30  |
+| Output | 22  | 22  | 22  |   | 22  | 22  |   | infra  | infra  |
+| Quality | 1  | 1  | 1  |   | 1  | 1  |   | 1  | 1  |
+| Stocks | 0  | -  | -  |   | 20  | -  |   | -  | -  |
+
+**Residents**
+
+|        | E1 | W2  | U3  | E4  | W5  | U6 | W7 | W8 | W9 | U10 |
+|--------|----|-----|-----|----|-----|-----|----|----|----|-----|
+| Tokens | 50 | 160 | 120 | 50 | 140 | 110 | 110 | 110 | 110 | 80 |
+| Products | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  |
+
+#### Phase 3 — Price evaluation & trade
+
+> **Weighted average cost**
+>
+> P = ​∑i​(Ci​⋅Qi​)​/∑i​Qi 
+> 
+> Unit labor costs:  
+> Ca = 40/11 = 3.636  
+> Cb = 30/33 = 0.909 
+>  
+> P = ((3.636 x 11) + (0.909*33)) / (11+33)  
+> = (40 + 30)/44  
+> = 1.59 ~ **1.6**
+> 
+> Unit price = P x Gm = 1.6 x 1.2 = 1.9
+
+**Economic Output Matrix**
+
+> Update stocks!
+
+|      | E1 | w2 | w9 |   | E4 | w5 |   | w7 | w8 |
+|------|----|----|----|---|----|----|---|----|----|
+| Salary | -  | 40  | 30  |   | -  | 30  |   | 30  | 30  |
+| Output | 0  | 0  | 0  |   | 0  | 0  |   | infra  | infra  |
+| Quality | 1  | 1  | 1  |   | 1  | 1  |   | 1  | 1  |
+| Stocks | 66  | -  | -  |   | 64  | -  |   | -  | -  |
+
+**Residents**
+
+> Residents trade
+
+|        | E1 | W2  | U3  | E4  | W5  | U6 | W7 | W8 | W9 | U10 |
+|--------|----|-----|-----|----|-----|-----|----|----|----|-----|
+| Tokens | 31 | 141 | 101 | 31 | 121 | 91 | 91 | 91 | 91 | 61 |
+| Products | 10  | 10  | 10  | 10  | 10  | 10  | 10  | 10  | 10  | 10  |
+
+> Update stocks!
+
+|      | E1 | w2 | w9 |   | E4 | w5 |   | w7 | w8 |
+|------|----|----|----|---|----|----|---|----|----|
+| Salary | -  | 40  | 30  |   | -  | 30  |   | 30  | 30  |
+| Output | 0  | 0  | 0  |   | 0  | 0  |   | infra  | infra  |
+| Quality | 1  | 1  | 1  |   | 1  | 1  |   | 1  | 1  |
+| Stocks | 16  | -  | -  |   | 14  | -  |   | -  | -  |
+
+> Revenues for Entrepreneurs
+
+*Both E1 and E2 sold 50 units each with revenue of 95 tokens for both. Residents won't purchase more than they consume at this point.*
+
+|        | E1 | W2  | U3  | E4  | W5  | U6 | W7 | W8 | W9 | U10 |
+|--------|----|-----|-----|----|-----|-----|----|----|----|-----|
+| Tokens | 126 | 141 | 101 | 126 | 121 | 91 | 91 | 91 | 91 | 61 |
+| Products | 10  | 10  | 10  | 10  | 10  | 10  | 10  | 10  | 10  | 10  |
+
+Both entrepreneurs are finally starting to earn a living from their revenue.
+
+
+#### Final phase — Taxes and consumption
+
+*The problem of unemployed residents having no income is becoming apparent. In the next round, the Elder must address it.*
+
+|        | E1 | W2  | U3  | E4  | W5  | U6 | W7 | W8 | W9 | U10 |
+|--------|----|-----|-----|----|-----|-----|----|----|----|-----|
+| Tokens | 113 | 127 | 91 | 113 | 109 | 82 | 82 | 82 | 82 | 55 |
+| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
