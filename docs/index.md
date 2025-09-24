@@ -37,12 +37,13 @@ Q = Total number of products
 
 ## Rules
 
-Each iteration consists of four phases, executed in order:
+Each iteration consists of five phases, executed in order:
 
-1. **Currency creation, payments and production**
-2. **Price evaluation & trade**
-3. **Taxes and consumption**
-4. **Opportunity evaluation and resident status changes**  
+- **Meta Phase — Opportunity evaluation, resident status changes, economic factors changes**
+- **Currency creation, payments and production**
+- **Price evaluation & trade**
+- **Taxes and consumption**
+- **Opportunity evaluation and resident status changes**  
    *(evaluating potential entrepreneurship, employment changes, and possible deaths)*
 
 Values are tracked in simple tables, updated round by round and phase by phase.
@@ -53,7 +54,7 @@ Values are tracked in simple tables, updated round by round and phase by phase.
 - **U** = Unemployed
 - **E** = Entrepreneur  
 - **W** = Employed (worker)  
-- **X** = Deceased
+- **D** = Deceased
 
 ## Template (start by copying all belove this to your text editor)
 
@@ -63,7 +64,7 @@ Values are tracked in simple tables, updated round by round and phase by phase.
 > **U** = Unemployed  
 > **E** = Entrepreneur  
 > **W** = Employed (worker)  
-> **X** = Deceased
+> **D** = Deceased
 
 ## Variables
 
@@ -73,57 +74,181 @@ Values are tracked in simple tables, updated round by round and phase by phase.
 > Initial tax factor: 0.0  
 > Other options: ____________________________________________
 
-
-### Initial state
-
-|       | Elder | Mint |
-|-------|----|----|
-| Balance | 0 | 0 |
-
-|       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
-|-------|----|----|----|----|----|----|----|----|----|-----|
-| Output | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-
 ---
 ---
-**Copy the template below iteratively i.e. Round 1, Round 2, Round N... and fill the tables phase by phase following the rules and laws you have created**
+**Copy rounds below iteratively i.e. Round 1, Round 2, Round N... and fill the tables phase by phase following the rules and laws you have created**
 ---
 ---
 
 ## Round N
 
-#### Phase 1 — Opportunity evaluation and resident status changes
+#### Meta Phase — Opportunity evaluation, resident status changes, economic factors changes.
 
-|       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
-|-------|----|----|----|----|----|----|----|----|----|-----|
-| Output | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+Update economic factors!
 
-#### Phase 2 — Currency creation, payments and production
+**Overall economic factors**
 
- > P<sub>unit</sub> = M/Q<sub>available</sub> = 100/10 = ___
+> Infrastructure efficiency factor (IE): 1.0   
+> Technology progress factor (TP): 1.0  
+> Resource volatility scale (RV): 1.0  
+> Gross margin factor (GM): 1.0
 
-|       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
-|-------|----|----|----|----|----|----|----|----|----|-----|
-| Output | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+**Administration**
+
+|         | Elder| Mint |
+|---------|------|------|
+| Balance |   0  |   0  |
+
+**Community**
+
+Update status changes!
+
+|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
+|----------|----|----|----|----|----|----|----|----|----|-----|
+| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+
+**Economic Output Matrix**
+
+Update employment hierarchies, salaries, work quality factors and output (string/number)!
+
+|         | XN | XN | XN |    | XN | XN | XN |
+|---------|----|----|----|----|----|----|----|
+| Salary  |    |    |    |    |    |    |    |
+| Output  |    |    |    |    |    |    |    |
+| Quality |    |    |    |    |    |    |    |
+| Stocks  |    |    |    |    |    |    |    |
+
+
+#### Phase 2 — Currency creation, production, payments
+
+**Overall economic factors**
+
+> Infrastructure efficiency factor (IE): 1.0   
+> Technology progress factor (TP): 1.0  
+> Resource volatility scale (RV): 1.0  
+> Gross margin factor (GM): 1.0  
+
+**Administration**
+
+Update administrative bank accounts!
+
+|         | Elder| Mint |
+|---------|------|------|
+| Balance |   0  |   0  |
+
+**Community**
+
+Update incomes (from benefits or salary)!
+
+|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
+|----------|----|----|----|----|----|----|----|----|----|-----|
+| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+
+**Economic Output Matrix**
+
+Update stocks!
+
+> Stocks per XN = Output x IE x TP x RV  
+> Stocks accretion = Stocks + ∑XN
+> 
+> Quality: education factor x technology factor (???)
+
+|         | EN | WN | WN |    | EN | WN | WN |
+|---------|----|----|----|----|----|----|----|
+| Salary  |    |    |    |    |    |    |    |
+| Output  |    |    |    |    |    |    |    |
+| Quality |    |    |    |    |    |    |    |
+| Stocks  |    |    |    |    |    |    |    |
+
 
 #### Phase 3 — Price evaluation & trade
 
-|       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
-|-------|----|----|----|----|----|----|----|----|----|-----|
-| Output | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+> **Price formation**
+>
+> P = ∑i (C<sub>i</sub> · Q<sub>i</sub>) / ∑i Q<sub>i</sub>
+>
+> Where:  
+> - C<sub>i</sub> = labor unit price / productivity  
+> - Q<sub>i</sub> = quantity of input i
+>
+> Final unit price:  
+> P<sub>unit</sub> = C<sub>unit</sub> × GM × RV
+> 
+> Where:  
+> - GM = gross margin factor  
+> - RV = resource volatility scale
+
+Calculate final unit price!
+
+> Here
+
+**Economic Output Matrix**
+
+> Update stocks!
+
+|         | EN | WN | WN |    | EN | WN | WN |
+|---------|----|----|----|----|----|----|----|
+| Salary  |    |    |    |    |    |    |    |
+| Output  |    |    |    |    |    |    |    |
+| Quality |    |    |    |    |    |    |    |
+| Stocks  |    |    |    |    |    |    |    |
+
+**Residents**
+
+Add products!
+
+|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
+|----------|----|----|----|----|----|----|----|----|----|-----|
+| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+
+Remove from stocks!
+
+|         | EN | WN | WN |    | EN | WN | WN |
+|---------|----|----|----|----|----|----|----|
+| Salary  |    |    |    |    |    |    |    |
+| Output  |    |    |    |    |    |    |    |
+| Quality |    |    |    |    |    |    |    |
+| Stocks  |    |    |    |    |    |    |    |
+
+Calculate revenues for Entrepreneurs!
+
+|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
+|----------|----|----|----|----|----|----|----|----|----|-----|
+| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
 
 #### Final phase — Taxes and consumption
 
-|       | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
-|-------|----|----|----|----|----|----|----|----|----|-----|
-| Output | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Tokens | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Products | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+**Overall economic factors**
+
+> Infrastructure efficiency factor (IE): 1.0  
+> Technology progress factor (TP): 1.0  
+> Resource volatility scale (RV): 1.0  
+> Gross margin factor (GM): 1.0 
+
+**Administration**
+
+|         | Elder| Mint |
+|---------|------|------|
+| Balance |   0  |   0  |
+
+**Community**
+
+Tax out tokens and consume products!
+
+|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
+|----------|----|----|----|----|----|----|----|----|----|-----|
+| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+
+**Economic Output Matrix**
+
+|         | EN | WN | WN |    | EN | WN | WN |
+|---------|----|----|----|----|----|----|----|
+| Salary  |    |    |    |    |    |    |    |
+| Output  |    |    |    |    |    |    |    |
+| Quality |    |    |    |    |    |    |    |
+| Stocks  |    |    |    |    |    |    |    |
