@@ -12,18 +12,28 @@ A virtual isolated village with 10 residents, the Elder, and a Bank.
 
 - All exchanges must be made using the Token.
 - Each individual *must not* consume their own product
-- Only one type of product exists, covering every possible need (simplifying consumption decisions).
+- Only one type of product exists, covering every possible need, but the product quality can be enhanced.
 - Only one type of companies output this single product.
-- Product prices are calculated per unit:
+- Product prices are calculated per unit using formula of weighted average cost. The prices are modulated by gross margin and resource volatility scale (=resource prices):
 
-> P<sub>unit</sub> = M1<sub>total</sub> / Q 
+> **Weighted average cost**
 >
->M1<sub>total</sub> = Total token supply  
-Q = Total number of products
+> P = ∑i (C<sub>i</sub> · Q<sub>i</sub>) / ∑i Q<sub>i</sub>
+>
+> Where:  
+> - C<sub>i</sub> = labor unit price / productivity  
+> - Q<sub>i</sub> = quantity of input i
+>
+> Final unit price:  
+> P<sub>unit</sub> = C<sub>unit</sub> × GM × RV
+> 
+> Where:  
+> - GM = gross margin factor  
+> - RV = resource volatility scale
 
-- Technological advancements can increase production output (not included in the alpha model).
-- Centralizing capital and labor within a company structure enhances output. *(Simulation rule, not a real-world assumption)*
-- Base consumption is 1 product/resident/round
+- Technological advancements can increase production output thus increasing productivity.
+- Centralizing labor within a company structure enhances output. *(Simulation rule, not a real-world assumption)*
+- Base consumption is 10 product/resident/round
 
 ## Variables
 
