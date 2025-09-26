@@ -21,7 +21,7 @@ A virtual isolated village with 10 residents, the Elder, and a Bank.
 > P = ∑i (C<sub>i</sub> · Q<sub>i</sub>) / ∑i Q<sub>i</sub>
 >
 > Where:  
-> - C<sub>i</sub> = labor unit price / productivity  
+> - C<sub>i</sub> = unit labor cost (per unit) 
 > - Q<sub>i</sub> = quantity of input i
 >
 > Final unit price:  
@@ -49,14 +49,13 @@ A virtual isolated village with 10 residents, the Elder, and a Bank.
 
 Each iteration consists of five phases, executed in order:
 
-- **Meta Phase — Opportunity evaluation, resident status changes, economic factors changes**
-- **Currency creation, payments and production**
-- **Price evaluation & trade**
-- **Taxes and consumption**
-- **Opportunity evaluation and resident status changes**  
+- **Meta Phase — Currency creation. Opportunity evaluation, resident status changes, economic factors changes**
+- **Phase 1 — Production and payments**
+- **Phase 2 — Price evaluation & trade**
+- **Phase 3 — Taxes and consumption**
    *(evaluating potential entrepreneurship, employment changes, and possible deaths)*
 
-Values are tracked in simple tables, updated round by round and phase by phase.
+Values are tracked in tables, updated round by round and phase by phase.
 
 ### Resident status codes
 
@@ -79,9 +78,9 @@ Values are tracked in simple tables, updated round by round and phase by phase.
 ## Variables
 
 > Banking type: (private/public)  
-> Monetary system: (Fiat, Gold, Private)  
+> Monetary system: (Fiat, Gold, Debt)  
 > Entrepreneurial allowance: (state, private companies etc.)  
-> Initial tax factor: 0.0  
+> Initial tax factor: 1.0  
 > Other options: ____________________________________________
 
 ---
@@ -92,7 +91,7 @@ Values are tracked in simple tables, updated round by round and phase by phase.
 
 ## Round N
 
-#### Meta Phase — Opportunity evaluation, resident status changes, economic factors changes.
+#### Meta Phase — Currency creation, opportunity evaluation, resident status changes, economic factors changes.
 
 Update economic factors!
 
@@ -102,42 +101,56 @@ Update economic factors!
 > Technology progress factor (TP): 1.0  
 > Resource volatility scale (RV): 1.0  
 > Gross margin factor (GM): 1.0
+> Tax factor: 1.0
 
 **Administration**
 
-|         | Elder| Mint |
-|---------|------|------|
-| Balance |   0  |   0  |
+> **Ledger note:**  
+> In this model, the three ledger columns track the core monetary flows:  
+> 1. **Elder’s account** — government-held tokens, used for public spending and taxes.  
+> 2. **Ledger (total supply)** — the total amount of currency in circulation. Positive in commodity-based systems (e.g., gold standard), negative in debt-based systems.  
+> 3. **Government debt** — obligations owed by the government to the banking system. Remains zero in a pure gold standard; fluctuates in debt-based systems.  
+>
+> Always ensure the following:  
+> - Token sum in the community = |Ledger (total supply)|  
+> - In gold standard: Government debt = 0  
+> - In debt-based system: Ledger total = Elder’s balance + Government debt
+
+
+|         | Elder's account | Ledger (total supply) | Government debt |
+|---------|-----------------|-----------------------|-----------------|
+| Balance |         0       |            0          |        0        |
 
 **Community**
 
-Update status changes!
+Update statuses (R→U/E/W/D). Ensure token sum conserved and total is equal to absolute value ledger total!
 
-|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
-|----------|----|----|----|----|----|----|----|----|----|-----|
-| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
-| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |  total   |
+|----------|----|----|----|----|----|----|----|----|----|-----|----------|
+| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |    0     |
+| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |    -     |
 
 **Economic Output Matrix**
 
 Update employment hierarchies, salaries, work quality factors and output (string/number)!
 
-|         | XN | XN | XN |    | XN | XN | XN |
-|---------|----|----|----|----|----|----|----|
-| Salary  |    |    |    |    |    |    |    |
-| Output  |    |    |    |    |    |    |    |
-| Quality |    |    |    |    |    |    |    |
-| Stocks  |    |    |    |    |    |    |    |
+|               | XN | XN | XN |    | XN | XN | XN |
+|---------------|----|----|----|----|----|----|----|
+| Salary        |    |    |    |    |    |    |    |
+| Output/round  |    |    |    |    |    |    |    |
+| Quality       |    |    |    |    |    |    |    |
+| Stocks total  |    |    |    |    |    |    |    |
 
 
-#### Phase 2 — Currency creation, production, payments
+#### Phase 1 — Production, payments
 
 **Overall economic factors**
 
 > Infrastructure efficiency factor (IE): 1.0   
 > Technology progress factor (TP): 1.0  
 > Resource volatility scale (RV): 1.0  
-> Gross margin factor (GM): 1.0  
+> Gross margin factor (GM): 1.0
+> Tax factor: 1.0
 
 **Administration**
 
@@ -149,12 +162,12 @@ Update administrative bank accounts!
 
 **Community**
 
-Update incomes (from benefits or salary)!
+Update incomes (from benefits or salary). Ensure token sum conserved and total is equal to absolute value of elder's account!
 
-|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
-|----------|----|----|----|----|----|----|----|----|----|-----|
-| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
-| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |  total   |
+|----------|----|----|----|----|----|----|----|----|----|-----|----------|
+| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |    0     |
+| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |    -     |
 
 **Economic Output Matrix**
 
@@ -165,22 +178,22 @@ Update stocks!
 > 
 > Quality: education factor x technology factor (???)
 
-|         | EN | WN | WN |    | EN | WN | WN |
-|---------|----|----|----|----|----|----|----|
-| Salary  |    |    |    |    |    |    |    |
-| Output  |    |    |    |    |    |    |    |
-| Quality |    |    |    |    |    |    |    |
-| Stocks  |    |    |    |    |    |    |    |
+|               | XN | XN | XN |    | XN | XN | XN |
+|---------------|----|----|----|----|----|----|----|
+| Salary        |    |    |    |    |    |    |    |
+| Output/round  |    |    |    |    |    |    |    |
+| Quality       |    |    |    |    |    |    |    |
+| Stocks total  |    |    |    |    |    |    |    |
 
 
-#### Phase 3 — Price evaluation & trade
+#### Phase 2 — Price evaluation & trade
 
 > **Price formation**
 >
 > P = ∑i (C<sub>i</sub> · Q<sub>i</sub>) / ∑i Q<sub>i</sub>
 >
 > Where:  
-> - C<sub>i</sub> = labor unit price / productivity  
+> - C<sub>i</sub> = unit labor cost (per unit)
 > - Q<sub>i</sub> = quantity of input i
 >
 > Final unit price:  
@@ -198,46 +211,47 @@ Calculate final unit price!
 
 > Update stocks!
 
-|         | EN | WN | WN |    | EN | WN | WN |
-|---------|----|----|----|----|----|----|----|
-| Salary  |    |    |    |    |    |    |    |
-| Output  |    |    |    |    |    |    |    |
-| Quality |    |    |    |    |    |    |    |
-| Stocks  |    |    |    |    |    |    |    |
+|               | XN | XN | XN |    | XN | XN | XN |
+|---------------|----|----|----|----|----|----|----|
+| Salary        |    |    |    |    |    |    |    |
+| Output/round  |    |    |    |    |    |    |    |
+| Quality       |    |    |    |    |    |    |    |
+| Stocks total  |    |    |    |    |    |    |    |
 
 **Residents**
 
 Add products!
 
-|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
-|----------|----|----|----|----|----|----|----|----|----|-----|
-| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
-| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |  total   |
+|----------|----|----|----|----|----|----|----|----|----|-----|----------|
+| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |    0     |
+| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |    -     |
 
-Remove from stocks!
+And remove from stocks accordingly!
 
-|         | EN | WN | WN |    | EN | WN | WN |
-|---------|----|----|----|----|----|----|----|
-| Salary  |    |    |    |    |    |    |    |
-| Output  |    |    |    |    |    |    |    |
-| Quality |    |    |    |    |    |    |    |
-| Stocks  |    |    |    |    |    |    |    |
+|               | XN | XN | XN |    | XN | XN | XN |
+|---------------|----|----|----|----|----|----|----|
+| Salary        |    |    |    |    |    |    |    |
+| Output/round  |    |    |    |    |    |    |    |
+| Quality       |    |    |    |    |    |    |    |
+| Stocks total  |    |    |    |    |    |    |    |
 
-Calculate revenues for Entrepreneurs!
+Calculate revenues for Entrepreneurs. Ensure token sum conserved and total is equal to absolute value of elder's account!
 
-|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
-|----------|----|----|----|----|----|----|----|----|----|-----|
-| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
-| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |  total   |
+|----------|----|----|----|----|----|----|----|----|----|-----|----------|
+| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |    0     |
+| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |    -     |
 
 #### Final phase — Taxes and consumption
 
 **Overall economic factors**
 
-> Infrastructure efficiency factor (IE): 1.0  
+> Infrastructure efficiency factor (IE): 1.0   
 > Technology progress factor (TP): 1.0  
 > Resource volatility scale (RV): 1.0  
-> Gross margin factor (GM): 1.0 
+> Gross margin factor (GM): 1.0
+> Tax factor: 1.0
 
 **Administration**
 
@@ -247,18 +261,18 @@ Calculate revenues for Entrepreneurs!
 
 **Community**
 
-Tax out tokens and consume products!
+Tax out tokens and consume products. Ensure token sum conserved and total is equal to absolute value of elder's account!
 
-|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
-|----------|----|----|----|----|----|----|----|----|----|-----|
-| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
-| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |
+|          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |  total   |
+|----------|----|----|----|----|----|----|----|----|----|-----|----------|
+| Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |    0     |
+| Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |    -     |
 
 **Economic Output Matrix**
 
-|         | EN | WN | WN |    | EN | WN | WN |
-|---------|----|----|----|----|----|----|----|
-| Salary  |    |    |    |    |    |    |    |
-| Output  |    |    |    |    |    |    |    |
-| Quality |    |    |    |    |    |    |    |
-| Stocks  |    |    |    |    |    |    |    |
+|               | XN | XN | XN |    | XN | XN | XN |
+|---------------|----|----|----|----|----|----|----|
+| Salary        |    |    |    |    |    |    |    |
+| Output/round  |    |    |    |    |    |    |    |
+| Quality       |    |    |    |    |    |    |    |
+| Stocks total  |    |    |    |    |    |    |    |
