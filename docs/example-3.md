@@ -1,4 +1,4 @@
-## Exampe 3
+## Example 3
 
 ### Status codes
 
@@ -24,7 +24,7 @@
 
 ## Round 1
 
-#### Meta Phase — Currency creation, opportunity evaluation, resident status changes, economic factors changes.
+### Meta Phase — Currency creation, opportunity evaluation, resident status changes, economic factors changes.
 
 Update economic factors!
 
@@ -78,14 +78,14 @@ Update employment hierarchies, salaries, work quality factors and output (string
 | Stocks total  |30q1|    |    |    |    |10q2|    |    |
 
 
-#### Phase 1 — Production, payments
+### Phase 1 — Production, payments
 
 **Overall economic factors**
 
 > Infrastructure efficiency factor (IE): 1.0   
 > Technology progress factor (TP): 1.0  
 > Resource volatility scale (RV): 1.0  
-> Gross margin factor (GM): 1.0
+> Gross margin factor (GM): 1.0  
 > Tax factor: 0.8
 
 **Administration**
@@ -107,12 +107,37 @@ Update incomes (from benefits or salary). Ensure token sum conserved and total i
 
 **Economic Output Matrix**
 
-Update stocks!
+Calculate production characteristics and add to stocks!
 
-> Stocks per XN = Output * IE * TP * RV  
-> Stocks accretion = Stocks + ∑XN
+> **Company Total Output**
+>
+> P<sub>company</sub> = ∑<sub>N</sub>P<sub>XN</sub>
+>
+> **Production per Producer X<sub>N</sub>**
+>
+> P<sub>XN</sub> = output_base * w<sub>P</sub> * ln(1 + e<sub>P</sub> * (IE<sub>N</sub> * TP<sub>N</sub> * RV<sub>N</sub>))
+>
+> Where:
 > 
-> Quality: education factor * technology factor (???)
+> - **output_base** = Production base quantity
+> - **w<sub>P</sub>** = Weight for production scaling  
+> - **IE** = Infrastructure Efficiency factor (≥ 0)  
+> - **TP** = Technology Progress factor (≥ 0)  
+> - **RV** = Resource Volatility scale (≥ 0, affects both production and pricing)
+>
+> **Stocks accretion**
+>
+> Stocks total = Stocks + P<sub>company</sub>
+>
+> ---
+> **End Product Quality value**
+>
+> Q = w<sub>Q</sub> * ln(1 + e<sub>Q</sub> * (IE * TP))
+> Where:
+>
+> - **w<sub>Q</sub>** = Weight for quality scaling 
+> - **IE** = Infrastructure Efficiency factor (≥ 0)  
+> - **TP** = Technology Progress factor (≥ 0)  
 
 |               | E1 | W2 | W3 | W4 |    | E5 | W6 | W7 |
 |---------------|----|----|----|----|----|----|----|----|
@@ -122,26 +147,33 @@ Update stocks!
 | Stocks total  |30q1|    |    |    |    |10q2|    |    |
 
 
-#### Phase 2 — Price evaluation & trade
+### Phase 2 — Price evaluation & trade
 
-> **Price formation**
+Calculate unit price!
+
+> **Calculating Product Price**
 >
-> P = ∑i (C<sub>i</sub> * Q<sub>i</sub>) / ∑i Q<sub>i</sub>
->
-> Where:  
-> - C<sub>i</sub> = unit labor cost (per unit)
-> - Q<sub>i</sub> = quantity of input i
->
-> Final unit price:  
-> P<sub>unit</sub> = C<sub>unit</sub> * GM * RV
+> Price of product *i*:
 > 
-> Where:  
-> - GM = gross margin factor  
-> - RV = resource volatility scale
+> P<sub>i</sub> = C<sub>i</sub> / RV × (1 + GM)
+>
+> Where:
+>
+> - C<sub>i</sub> = Unit cost of production for product *i*  
+>   C<sub>i</sub> = Salaries paid ÷ Output quantity
+> - GM = Gross Margin factor (e.g. 0.2 = 20%)
+> - RV = Resource volatility (Inverted 1/RV -> higher output lowers the price)
+>
+> Example:
+>
+> If total salaries = 300 tokens, output = 50 units, GM = 0.2, RV = 2:
+>
+> C<sub>i</sub> = 300 ÷ 50 = 6  
+> P<sub>i</sub> = 6/2 × (1 + 0.2) = 3.6 tokens per unit
 
-Calculate final unit price!
+Calculate market share for each company product!
 
-> **Calculating market share**
+> **Calculating Market Share**
 >
 > Market share of product *i* (softmax with temperature):
 > 
@@ -150,7 +182,7 @@ Calculate final unit price!
 > **Utility of product *i***  
 > uᵢ = qw · qᵢ − pw · pᵢ  
 >
-> **Parameters:**  
+> Where:  
 > • qw = quality weight (0–1)  
 > • pw = price weight (0–1)  
 > • qᵢ = product quality (1 = worst, 10 = best)  
@@ -237,7 +269,7 @@ Calculate revenues for Entrepreneurs. Ensure token sum conserved and total is eq
 | Tokens   |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |    0     |
 | Products |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0 |  0  |    -     |
 
-#### Final phase — Taxes and consumption
+### Phase 3 — Taxes and consumption
 
 **Overall economic factors**
 
