@@ -4,7 +4,7 @@ This simulation explores how an isolated village of residents might implement an
 
 This page explains how to manually implement and follow the system flow and provides a template. Please check the examples (menu above) of how the template have been used and the findings I have made.
 
-**Please note that this page is *not* the requirements of the application! For interested they are found [here](https://github.com/whyowisp/token-of-exchange/blob/main/docs/ToE-requirements.md).**
+**Please note that this page is *not* the requirements of the application** (though very much related)**! For interested they are found [here](https://github.com/whyowisp/token-of-exchange/blob/main/docs/ToE-requirements.md).**
 
 ## Base Assumptions
 
@@ -64,6 +64,35 @@ Values are tracked in tables, updated round by round and phase by phase.
 - **E** = Entrepreneur  
 - **W** = Employed (worker)  
 - **D** = Deceased
+
+## Notes
+
+> ### 📌 Resource Volatility Scale (RV) — User Guide
+>
+> **What it is:**  
+> RV is a versatile coefficient that describes variations in the availability of resources in the economy.  
+> It is not just a price index, but a composite factor that influences both production quantity and costs.
+>
+> **What RV measures:**  
+> - Physical availability of resources (e.g. harvest yield, mine output)  
+> - Production costs of resources (e.g. energy or raw material costs)  
+> - External shocks (e.g. environmental crises, weather conditions, supply chain disruptions)  
+>
+> **Why it matters:**  
+> RV directly affects both **production levels** and **prices**:  
+> - **Production:** `Stocks per XN = Output × IE × TP × RV`  
+> - **Price:** higher availability (high RV) tends to lower prices, lower availability raises prices.
+>
+> **Important notes:**  
+> - RV can be greater or less than 1.0, adjusting production and prices accordingly.  
+> - RV combines quantitative availability and cost effects into a single coefficient, which makes the model flexible but requires careful documentation.  
+>
+> **Example:**  
+> If RV = 2.0 → resource availability is doubled → production increases, price decreases.  
+> If RV = 0.5 → availability halved → production decreases, price increases.
+ 
+
+
 
 ## Template (start by copying all belove this to your text editor)
 
