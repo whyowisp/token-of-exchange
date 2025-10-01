@@ -1,4 +1,4 @@
-## *Title Of Your Simulation*
+## Template
 
 ### Status codes
 
