@@ -7,3 +7,10 @@ description: Heterodox economic insights through the eyes of an Engineer and Sof
 author:
   name: Mikko Sipola — 2025
   email: "mikko.sipola@tutanota.com"
+nav:
+  - title: Home
+    url: /
+  - title: Template
+    url: /template
+  - title: Example
+    url: /example
