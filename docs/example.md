@@ -1,5 +1,7 @@
 ## Example
 
+[go back](https://whyowisp.github.io/token-of-exchange/)
+
 This example file shows how to use the template
 
 ### Status codes

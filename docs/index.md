@@ -1,10 +1,19 @@
 ## The Iterative Method
 
+### Pages
+
+[Iterative Method](https://whyowisp.github.io/token-of-exchange/)  
+[Template](https://whyowisp.github.io/token-of-exchange/template.html)  
+[Example](https://whyowisp.github.io/token-of-exchange/example.html)
+
+### Preface
+
 This simulation explores how an isolated village of residents might implement an economic system using a common token as a medium of exchange. Each iteration models production, trade, and token circulation, allowing observation of how wealth and tokens distributes, how productivity and technological advances affect the economy, and how token supply influences purchasing power. The experiment abstracts complex dynamics of money, debt, and consumption to reveal fundamental mechanisms behind economic flows in a simple, iterative framework.
 
 This page explains how to manually implement and follow the system flow and provides a template. Please check the examples (menu above) of how the template have been used and the findings I have made.
 
 **Please note that this page is *not* the requirements of the application** (though very much related)**! For interested they are found [here](https://github.com/whyowisp/token-of-exchange/blob/main/docs/ToE-requirements.md).**
+
 
 ## Base Assumptions
 

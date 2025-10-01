@@ -1,15 +1,6 @@
-remote_theme: "jekyll/minima@1e8a445"
+remote_theme: "pages-themes/slate@v0.2.0"
 title: Token of Exchange
 description: Heterodox economic insights through the eyes of an Engineer and Software Developer
-minima:
-  skin: classic
 author:
   name: Mikko Sipola — 2025
   email: "mikko.sipola@tutanota.com"
-nav:
-  - title: Home
-    url: /
-  - title: Template
-    url: /template
-  - title: Example
-    url: /example
