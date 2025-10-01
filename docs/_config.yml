@@ -1,32 +1,12 @@
-# Theme configuration
-remote_theme: mmistakes/minimal-mistakes@4.24.0
-
-plugins:
-  - jekyll-remote-theme
-  - jekyll-feed
-  - jekyll-seo-tag
-
-# Site settings
+remote_theme: "jekyll/minima@1e8a445"
 title: Token of Exchange
 description: Heterodox economic insights through the eyes of an Engineer and Software Developer
-baseurl: "" # GitHub Pages repository baseurl (leave empty if at root)
-url: "https://whyowisp.github.io/token-of-exchange" # Change to your site URL
-
+minima:
+  nav_pages:
+    - index.md
+    - template.md
+    - example.md
+  skin: classic
 author:
   name: Mikko Sipola — 2025
   email: "mikko.sipola@tutanota.com"
-
-# Navigation
-header_pages:
-  - index.md
-  - template.md
-  - example.md
-
-# Optional: Site appearance
-theme_color: "#007ACC"
-logo: /assets/images/logo.png
-
-# Plugins configuration
-feed:
-  path: feed.xml
-
