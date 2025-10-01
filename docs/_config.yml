@@ -1,4 +1,4 @@
-remote_theme: labsyspharm/just-the-docs-lsp
+remote_theme: just-the-docs/just-the-docs@v0.8.0
 title: Token of Exchange
 description: Heterodox economic insights through the eyes of an Engineer and Software Developer
 # plus mahdolliset asetukset jotka just-the-docs tukee (esim. navigaatio, layout)
