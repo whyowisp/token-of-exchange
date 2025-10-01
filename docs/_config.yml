@@ -1,12 +1,7 @@
-remote_theme: "jekyll/minima@1e8a445"
+remote_theme: labsyspharm/just-the-docs-lsp
 title: Token of Exchange
 description: Heterodox economic insights through the eyes of an Engineer and Software Developer
-minima:
-  nav_pages:
-    - index.md
-    - example-1.md
-    - example-2.md
-  skin: solarized-dark
+# plus mahdolliset asetukset jotka just-the-docs tukee (esim. navigaatio, layout)
 author:
   name: Mikko Sipola — 2025
   email: "mikko.sipola@tutanota.com"
