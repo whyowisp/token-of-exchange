@@ -26,9 +26,18 @@
 ---
 ---
 
-## Round 1
+## Round *N*
 
 ### Meta Phase — Currency creation, opportunity evaluation, resident status changes, economic factors changes.
+
+#### Community Actions
+
+> **IE_cost** = 5 tokens / +0.01 increment  
+> **TP_cost** = 8 tokens / +0.01 increment  
+> **Education** = 50 tokens / +1 quality / worker
+>
+> - For every 50 tokens worth of investment binds one resident out from the workforce.  
+> - Enhancements for societal factors are usable in next round.
 
 #### Overall economic factors
 
@@ -51,7 +60,7 @@ Update economic factors!
 > Always ensure the following:  
 > - Token sum in the community = | ledger (total supply) | 
 > - In gold standard: Government debt = 0  
-> - In debt-based system: Ledger total = Elder’s balance + Government debt
+> - In debt-based system: Ledger total = Community total + Elder’s balance + Government debt
 
 
 |         | Elder's account | Ledger (total supply) | Government debt |
@@ -100,7 +109,7 @@ Update administrative bank accounts!
 
 #### Community
 
-Update incomes (from benefits or salary). **Ensure token sum conserved and total is equal to absolute value of elder's account!**
+Update incomes (from benefits or salary). **Ensure token sum of all accounts are equal to absolute value of legder!**
 
 |          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |  Total   |
 |----------|----|----|----|----|----|----|----|----|----|-----|----------|
@@ -248,8 +257,7 @@ Calculate market share for each company product!
 
 #### Community
 
-Calculate revenues for Entrepreneurs. **Ensure token sum conserved and total is equal to absolute value of elder's account!**
-
+Calculate revenues for Entrepreneurs. **Ensure token sum of all accounts are equal to absolute value of legder!**
 ---
 *Your Calculations:*
 
@@ -272,7 +280,7 @@ Calculate revenues for Entrepreneurs. **Ensure token sum conserved and total is 
 
 #### Community
 
-Tax out tokens (round nearest) and consume products. **Ensure token sum conserved and total is equal to absolute value of elder's account!**
+Tax out tokens (round nearest) and consume products. **Ensure token sum of all accounts are equal to absolute value of legder!**
 
 |          | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |  Total   |
 |----------|----|----|----|----|----|----|----|----|----|-----|----------|
